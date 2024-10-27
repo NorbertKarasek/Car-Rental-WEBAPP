@@ -31,9 +31,9 @@ namespace CarRental_Backend.Controllers
         // GET: api/Client/index
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cars>> GetClient(int id)
+        public async Task<ActionResult<Clients>> GetClient(string id)
         {
-            var client = await _context.Cars.FindAsync(id);
+            var client = await _context.Clients.FindAsync(id);
 
             if (client == null)
             {
