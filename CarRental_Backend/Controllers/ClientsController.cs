@@ -20,7 +20,7 @@ namespace CarRental_Backend.Controllers
         }
 
         // GET: api/Clients
-        [AllowAnonymous]
+        [Authorize(Roles = "Employee,Administrator")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Clients>>> GetClients()
         {
@@ -29,7 +29,7 @@ namespace CarRental_Backend.Controllers
 
 
         // GET: api/Client/index
-        [AllowAnonymous]
+        [Authorize(Roles = "Employee,Administrator")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Clients>> GetClient(string id)
         {
