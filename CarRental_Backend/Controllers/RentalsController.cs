@@ -19,8 +19,8 @@ namespace CarRental_Backend.Controllers
             _context = context;
         }
 
-        // GET: api/Rentals
-        [HttpPost]
+        // GET: api/Rentals/RentACar
+        [HttpPost("RentACar")]
         [Authorize] 
         public async Task<IActionResult> CreateRental([FromBody] CreateRentalModel model)
         {
@@ -36,13 +36,16 @@ namespace CarRental_Backend.Controllers
                 return BadRequest("Car is not avilable now.");
 
             // Get logged in user
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var client = await _context.Clients.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
+            if (client == null)
+                return NotFound("Client not found");
 
             // Create new rental
             var rental = new Rentals
             {
                 Car_id = car.Car_id,
-                Client_id = userId,
+                Client_id = client.Client_id,
                 Rental_date = model.Rental_date,
                 Return_date = model.Return_date,
                 Rental_price = 0, // Will be calculated later
@@ -69,7 +72,7 @@ namespace CarRental_Backend.Controllers
         }
 
 
-        // GET: api/Rentals
+        // GET: api/Rentals/{id}/ConfirmReturn
         [HttpPut("{id}/ConfirmReturn")]
         [Authorize(Roles = "Employee,Administrator")]
         public async Task<IActionResult> ConfirmReturn(int id)
@@ -87,6 +90,14 @@ namespace CarRental_Backend.Controllers
 
             // Set car as free
             rental.Car.IsFree = true;
+
+            // Calculate additional fees
+            if (rental.Return_date_actual > rental.Return_date)
+            {
+                int extraDays = (rental.Return_date_actual.Value - rental.Return_date).Days;
+                decimal extraFees = extraDays * rental.Car.Car_PricePerDay;
+                rental.AdditionalFees = extraFees;
+            }
 
             await _context.SaveChangesAsync();
 
@@ -126,7 +137,7 @@ namespace CarRental_Backend.Controllers
         }
 
 
-        // GET: api/Rentals
+        // GET: api/Rentals/{id}/ApplyDiscount
         [HttpPut("{id}/ApplyDiscount")]
         [Authorize(Roles = "Employee,Administrator")]
         public async Task<IActionResult> ApplyDiscount(int id, [FromBody] decimal discount)
@@ -157,7 +168,7 @@ namespace CarRental_Backend.Controllers
         [Authorize]
         public async Task<IActionResult> GetMyRentals()
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var rentals = await _context.Rentals
                 .Include(r => r.Car)
                 .Where(r => r.Client_id == userId)
@@ -168,7 +179,7 @@ namespace CarRental_Backend.Controllers
 
 
         // GET: api/Rentals/AllRentals
-        [HttpGet]
+        [HttpGet("AllRentals")]
         [Authorize(Roles = "Employee,Administrator")]
         public async Task<IActionResult> GetAllRentals()
         {

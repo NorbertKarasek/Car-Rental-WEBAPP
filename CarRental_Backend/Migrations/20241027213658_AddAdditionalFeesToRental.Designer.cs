@@ -4,6 +4,7 @@ using CarRental_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRental_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241027213658_AddAdditionalFeesToRental")]
+    partial class AddAdditionalFeesToRental
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,8 +82,8 @@ namespace CarRental_Backend.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("longtext");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -100,8 +103,11 @@ namespace CarRental_Backend.Migrations
 
             modelBuilder.Entity("CarRental_Backend.Models.Clients", b =>
                 {
-                    b.Property<string>("Client_id")
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("Client_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Client_id"));
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
@@ -155,49 +161,51 @@ namespace CarRental_Backend.Migrations
 
             modelBuilder.Entity("CarRental_Backend.Models.Employees", b =>
                 {
-                    b.Property<string>("Employee_id")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("Employee_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Employee_id"));
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Employee_Address")
+                    b.Property<string>("Emplotyee_Address")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_City")
+                    b.Property<string>("Emplotyee_City")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_Country")
+                    b.Property<string>("Emplotyee_Country")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("Employee_Date_of_birth")
+                    b.Property<DateTime>("Emplotyee_Date_of_birth")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Employee_Email")
+                    b.Property<string>("Emplotyee_Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_Name")
+                    b.Property<string>("Emplotyee_Phone")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_Phone")
+                    b.Property<string>("Emplotyee_Position")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_Position")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Employee_Salary")
+                    b.Property<decimal>("Emplotyee_Salary")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("Employee_Surname")
+                    b.Property<string>("Emplotyee_Surname")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Employee_Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -410,17 +418,14 @@ namespace CarRental_Backend.Migrations
                     b.Property<int>("Car_id")
                         .HasColumnType("int");
 
-                    b.Property<string>("Client_id")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("Client_id")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("Employee_id")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                    b.Property<int?>("Employee_id")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsReturned")
                         .HasColumnType("tinyint(1)");
@@ -538,8 +543,7 @@ namespace CarRental_Backend.Migrations
                     b.HasOne("CarRental_Backend.Models.Employees", "Employee")
                         .WithMany()
                         .HasForeignKey("Employee_id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Car");
 

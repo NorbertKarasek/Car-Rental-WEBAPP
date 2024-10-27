@@ -15,7 +15,7 @@ var dbUser = Environment.GetEnvironmentVariable("MAIN_DB_USER");
 var dbPassword = Environment.GetEnvironmentVariable("MAIN_DB_PASS");
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
 builder.Configuration["ConnectionStrings:DefaultConnection"] = $"Server=localhost;Database=Car_rental;User Id={dbUser};Password={dbPassword};";
-builder.Configuration["JwtSettings:Key"] = $"Key = {jwtKey};";
+builder.Configuration["JwtSettings:Key"] = jwtKey;
 
 // Add services to the container.
 
@@ -103,7 +103,6 @@ app.UseCors("AllowAll");
 
 // Use authentication
 app.UseAuthentication();
-app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

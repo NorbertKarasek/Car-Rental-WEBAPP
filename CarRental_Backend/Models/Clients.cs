@@ -6,7 +6,7 @@ namespace CarRental_Backend.Models
     public class Clients
     {
         [Key]
-        public int Client_id { get; set; }
+        public string Client_id { get; set; }
         [Required]
         public string Client_Name { get; set; }
         [Required]
