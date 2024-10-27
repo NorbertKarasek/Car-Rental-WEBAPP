@@ -19,11 +19,12 @@ public class Cars
     [Required]
     public string Car_Color { get; set; }
     [Required]
-    public int Car_Price { get; set; }
+    public decimal Car_PricePerDay { get; set; }
     [Required]
-    public bool Car_Free { get; set; }
+    public bool IsFree { get; set; } = true;
     [Required]
     public string Car_class { get; set; }
+    public string Description { get; set; }
 
     // Collection of rentals
     public ICollection<Rentals> Rentals { get; set; } 

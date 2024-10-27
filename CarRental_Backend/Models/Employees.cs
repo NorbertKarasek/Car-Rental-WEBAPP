@@ -6,6 +6,8 @@ namespace CarRental_Backend.Models
     {
         [Key]
         public int Employee_id { get; set; }
+        public string UserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         [Required]
         public string Emplotyee_Name { get; set; }
         [Required]
@@ -23,7 +25,7 @@ namespace CarRental_Backend.Models
         [Required]
         public DateTime Emplotyee_Date_of_birth { get; set; }
         [Required]
-        public int Emplotyee_Salary { get; set; }
+        public decimal Emplotyee_Salary { get; set; }
         [Required]
         public string Emplotyee_Position { get; set; }
     }
