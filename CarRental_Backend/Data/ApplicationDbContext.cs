@@ -1,4 +1,5 @@
-﻿using CarRental_Backend.Models;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using CarRental_Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarRental_Backend.Data
@@ -12,7 +13,7 @@ namespace CarRental_Backend.Data
         public DbSet<Cars> Cars { get; set; }
         public DbSet<Clients> Clients { get; set; }
         public DbSet<Employees> Employees { get; set; }
-        public DbSet<Rentals> Reservations { get; set; }
+        public DbSet<Rentals> Rentals { get; set; }
 
 
         // more dbsets
