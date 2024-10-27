@@ -1,5 +1,6 @@
 ﻿using CarRental_Backend.Data;
 using CarRental_Backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ namespace CarRental_Backend.Controllers
         }
 
         // GET: api/Cars
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cars>>> GetCars()
         {
@@ -27,6 +29,7 @@ namespace CarRental_Backend.Controllers
 
 
         // GET: api/Cars/index
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Cars>> GetCar(int id)
         {
@@ -39,6 +42,5 @@ namespace CarRental_Backend.Controllers
 
             return car;
         }
-
     }
 }

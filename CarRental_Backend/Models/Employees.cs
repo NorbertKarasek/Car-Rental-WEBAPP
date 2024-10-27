@@ -6,16 +6,26 @@ namespace CarRental_Backend.Models
     {
         [Key]
         public int Employee_id { get; set; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public DateTime Date_of_birth { get; set; }
-        public int Salary { get; set; }
-        public string Position { get; set; }
+        [Required]
+        public string Emplotyee_Name { get; set; }
+        [Required]
+        public string Emplotyee_Surname { get; set; }
+        [Required]
+        public string Employee_Email { get; set; }
+        [Required]
+        public string Emplotyee_Phone { get; set; }
+        [Required]
+        public string Emplotyee_Address { get; set; }
+        [Required]
+        public string Emplotyee_City { get; set; }
+        [Required]
+        public string Emplotyee_Country { get; set; }
+        [Required]
+        public DateTime Emplotyee_Date_of_birth { get; set; }
+        [Required]
+        public int Emplotyee_Salary { get; set; }
+        [Required]
+        public string Emplotyee_Position { get; set; }
     }
 
 }

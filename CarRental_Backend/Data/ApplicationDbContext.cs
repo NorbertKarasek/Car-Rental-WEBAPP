@@ -4,8 +4,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarRental_Backend.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.Entity<Rentals>()
+                .HasOne(r => r.Car)
+                .WithMany(c => c.Rentals)
+                .HasForeignKey(r => r.Car_id);
+
+            modelBuilder.Entity<Rentals>()
+                .HasOne(r => r.Client)
+                .WithMany(c => c.Rentals)
+                .HasForeignKey(r => r.Client_id);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(a => a.Client)
+                .WithOne(c => c.ApplicationUser)
+                .HasForeignKey<Clients>(c => c.ApplicationUserId);
+        }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
@@ -15,7 +36,8 @@ namespace CarRental_Backend.Data
         public DbSet<Employees> Employees { get; set; }
         public DbSet<Rentals> Rentals { get; set; }
 
-
         // more dbsets
     }
+
 }
+
