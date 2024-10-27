@@ -5,25 +5,25 @@ public class Cars
     [Key]
     public int Car_id { get; set; }
     [Required]
-    public string Car_Brand { get; set; }
+    public string Brand { get; set; }
     [Required]
-    public string Car_Model { get; set; }
+    public string Model { get; set; }
     [Required]
-    public string Car_Type { get; set; }
+    public string Type { get; set; }
     [Required]
-    public int Car_Year { get; set; }
+    public int Year { get; set; }
     [Required]
-    public int Car_Mileage { get; set; }
+    public int Mileage { get; set; }
     [Required]
-    public bool Car_Gear_is_automatic { get; set; }
+    public bool IsAutomatic { get; set; }
     [Required]
-    public string Car_Color { get; set; }
+    public string Color { get; set; }
     [Required]
-    public decimal Car_PricePerDay { get; set; }
+    public decimal PricePerDay { get; set; }
     [Required]
     public bool IsFree { get; set; } = true;
     [Required]
-    public string Car_class { get; set; }
+    public string Class { get; set; }
     public string Description { get; set; }
 
     // Collection of rentals

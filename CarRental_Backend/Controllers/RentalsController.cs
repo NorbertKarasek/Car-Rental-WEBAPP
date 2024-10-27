@@ -63,7 +63,7 @@ namespace CarRental_Backend.Controllers
                 return BadRequest("Return date must be later than rent date.");
 
             // Calculate rental price
-            rental.Rental_price = CalculateRentalPrice(car.Car_PricePerDay, numberOfDays);
+            rental.Rental_price = CalculateRentalPrice(car.PricePerDay, numberOfDays);
 
             // Save changes
             await _context.SaveChangesAsync();
@@ -95,7 +95,7 @@ namespace CarRental_Backend.Controllers
             if (rental.Return_date_actual > rental.Return_date)
             {
                 int extraDays = (rental.Return_date_actual.Value - rental.Return_date).Days;
-                decimal extraFees = extraDays * rental.Car.Car_PricePerDay;
+                decimal extraFees = extraDays * rental.Car.PricePerDay;
                 rental.AdditionalFees = extraFees;
             }
 
@@ -155,7 +155,7 @@ namespace CarRental_Backend.Controllers
             int numberOfDays = (rental.Return_date - rental.Rental_date).Days;
 
             // Ponowne obliczenie ceny
-            rental.Rental_price = CalculateRentalPrice(rental.Car.Car_PricePerDay, numberOfDays, rental.Discount);
+            rental.Rental_price = CalculateRentalPrice(rental.Car.PricePerDay, numberOfDays, rental.Discount);
 
             await _context.SaveChangesAsync();
 

@@ -59,10 +59,10 @@ public class AuthController : ControllerBase
         // Create also a new client record
         var client = new Clients
         {
-            Client_Email = model.Email,
-            Client_Name = model.FirstName,
-            Client_Surname = model.LastName,
-            Client_Phone = model.PhoneNumber,
+            Email = model.Email,
+            FirstName = model.FirstName,
+            Surname = model.LastName,
+            PhoneNumber = model.PhoneNumber,
             ApplicationUserId = user.Id // Assign the generated user Id
         };
 
