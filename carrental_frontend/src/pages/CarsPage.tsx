@@ -3,9 +3,9 @@ import api from '../api/axios';
 import { Link } from 'react-router-dom';
 
 interface Car {
-    car_id: number;
-    car_Brand: string;
-    car_Model: string;
+    Car_id: number;
+    Brand: string;
+    Model: string;
     // Add more fields
 }
 
@@ -27,9 +27,9 @@ const CarsPage: React.FC = () => {
             <h1>Nasze samochody</h1>
             <ul>
                 {cars.map(car => (
-                    <li key={car.car_id}>
-                        <Link to={`/cars/${car.car_id}`}>
-                            {car.car_Brand} {car.car_Model}
+                    <li key={car.Car_id}>
+                        <Link to={`/cars/${car.Car_id}`}>
+                            {car.Brand} {car.Model}
                         </Link>
                     </li>
                 ))}
