@@ -7,7 +7,8 @@ namespace CarRental_Backend.Models
         [Key]
         [StringLength(255)]
         public string Employee_id { get; set; }
-        public string UserId { get; set; }
+        [Required]
+        public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         [Required]
         public string FirstName { get; set; }
@@ -16,19 +17,12 @@ namespace CarRental_Backend.Models
         [Required]
         public string Email { get; set; }
         [Required]
-        public string PhoneNumber { get; set; }
-        [Required]
-        public string Address { get; set; }
-        [Required]
-        public string City { get; set; }
-        [Required]
-        public string Country { get; set; }
-        [Required]
-        public DateTime DateOfBirth { get; set; }
-        [Required]
-        public decimal Salary { get; set; }
-        [Required]
-        public string Position { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Address { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public decimal? Salary { get; set; }
+        public string? Position { get; set; }
     }
-
 }

@@ -2,117 +2,122 @@
 using Microsoft.AspNetCore.Identity;
 using CarRental_Backend.Models;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 using CarRental_Backend.Data;
+using CarRental_Backend.Services;
 
-
-[Route("api/[controller]")]
-[ApiController]
-public class AuthController : ControllerBase
+namespace CarRental_Backend.Controllers
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IConfiguration _configuration;
-    private readonly ApplicationDbContext _context;
-
-    public AuthController(UserManager<ApplicationUser> userManager, IConfiguration configuration, ApplicationDbContext context)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
     {
-        _userManager = userManager;
-        _configuration = configuration;
-        _context = context;
-    }
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
+        private readonly TokenService _tokenService;
 
-    // POST: api/Auth/Register
-    [HttpPost("Register")]
-    public async Task<IActionResult> Register([FromBody] RegisterModel model)
-    {
-        if (!ModelState.IsValid)
+        public AuthController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, TokenService tokenService)
         {
-            return BadRequest(ModelState);
+            _userManager = userManager;
+            _context = context;
+            _tokenService = tokenService;
         }
 
-        var user = new ApplicationUser
+        // POST: api/Auth/Register
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            UserName = model.Email,
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            PhoneNumber = model.PhoneNumber
-        };
-
-        var result = await _userManager.CreateAsync(user, model.Password);
-
-        if (!result.Succeeded)
-        {
-            foreach (var error in result.Errors)
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                return BadRequest(ModelState);
             }
-            return BadRequest(ModelState);
+
+            // Check if role is valid
+            if (model.Role != "Client" && model.Role != "Employee")
+            {
+                return BadRequest("Invalid role. Role must be 'Client' or 'Employee'.");
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+                // Different properties
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+
+            // Assign role to user
+            await _userManager.AddToRoleAsync(user, model.Role);
+
+            if (model.Role == "Client")
+            {
+                // Create Record in Clients table
+                var client = new Clients
+                {
+                    Client_id = user.Id, // Use UserId as Client_id
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    Surname = model.LastName,
+                    PhoneNumber = model.PhoneNumber,
+                    ApplicationUserId = user.Id
+                    // Set other required properties
+                };
+
+                _context.Clients.Add(client);
+            }
+            else if (model.Role == "Employee")
+            {
+                // Create record in Employees table
+                var employee = new Employees
+                {
+                    Employee_id = user.Id, // Use UserId as Employee_id
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    Surname = model.LastName,
+                    PhoneNumber = model.PhoneNumber,
+                    ApplicationUserId = user.Id
+                    // Set other required properties
+                };
+
+                _context.Employees.Add(employee);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return StatusCode(StatusCodes.Status201Created, "User created successfully!");
+
         }
 
-        // Create also a new client record
-        var client = new Clients
+        // POST: api/Auth/Login
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            Email = model.Email,
-            FirstName = model.FirstName,
-            Surname = model.LastName,
-            PhoneNumber = model.PhoneNumber,
-            ApplicationUserId = user.Id // Assign the generated user Id
-        };
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        _context.Clients.Add(client);
-        await _context.SaveChangesAsync();
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
-        return Ok("User created successfully!");
-    }
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            {
+                var token = await _tokenService.GenerateJwtToken(user);
+                return Ok(new { token });
+            }
 
-    // POST: api/Auth/Login
-    [HttpPost("Login")]
-    public async Task<IActionResult> Login([FromBody] LoginModel model)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
+            return Unauthorized("Invalid login attempt.");
         }
-
-        var user = await _userManager.FindByEmailAsync(model.Email);
-
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
-        {
-            var token = GenerateJwtToken(user);
-            return Ok(new { token });
-        }
-
-        return Unauthorized("Invalid login attempt.");
-    }
-
-    private string GenerateJwtToken(ApplicationUser user)
-    {
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
-
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Name, user.UserName)
-        };
-
-        var token = new JwtSecurityToken(
-            issuer: jwtSettings["Issuer"],
-            audience: jwtSettings["Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["DurationInMinutes"])),
-            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

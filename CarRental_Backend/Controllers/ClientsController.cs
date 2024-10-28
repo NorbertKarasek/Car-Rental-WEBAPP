@@ -27,8 +27,7 @@ namespace CarRental_Backend.Controllers
             return await _context.Clients.ToListAsync();
         }
 
-
-        // GET: api/Client/index
+        // GET: api/Clients/{id}
         [Authorize(Roles = "Employee,Administrator")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Clients>> GetClient(string id)

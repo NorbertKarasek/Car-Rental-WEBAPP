@@ -53,13 +53,17 @@ namespace CarRental_Backend.Data
                 .WithMany(c => c.Rentals)
                 .HasForeignKey(r => r.Car_id);
 
-
             // Relation 1:1 between ApplicationUser and Clients
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(a => a.Client)
                 .WithOne(c => c.ApplicationUser)
                 .HasForeignKey<Clients>(c => c.ApplicationUserId);
-        
+
+            // Relation 1:1 between ApplicationUser and Employees
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(a => a.Employee)
+                .WithOne(e => e.ApplicationUser)
+                .HasForeignKey<Employees>(e => e.ApplicationUserId);
         }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)

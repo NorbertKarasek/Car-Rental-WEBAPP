@@ -1,13 +1,13 @@
 using CarRental_Backend.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using CarRental_Backend.Models;
+using CarRental_Backend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
-// Path: Program.cs
 var builder = WebApplication.CreateBuilder(args);
 
 // Set up configuration sources.
@@ -16,9 +16,12 @@ var dbPassword = Environment.GetEnvironmentVariable("MAIN_DB_PASS");
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
 builder.Configuration["ConnectionStrings:DefaultConnection"] = $"Server=localhost;Database=Car_rental;User Id={dbUser};Password={dbPassword};";
 builder.Configuration["JwtSettings:Key"] = jwtKey;
+builder.Configuration["JwtSettings:Issuer"] = "CarRentalAPI";
+builder.Configuration["JwtSettings:Audience"] = "CarRentalAPIUser";
+builder.Configuration["JwtSettings:DurationInMinutes"] = "60";
+
 
 // Add services to the container.
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
     new MySqlServerVersion(new Version(8, 0, 39))));
@@ -27,7 +30,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddEndpointsApiExplorer();
+// Register services to the container
+builder.Services.AddScoped<TokenService>();
+
+// Swagger configuration settings for JWT
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -55,7 +61,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// JWT Authentication
+// JWT Authentication settings
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
@@ -74,16 +80,15 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key)
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ClockSkew = TimeSpan.Zero
     };
 });
 
 // Add controllers to the container.
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// CORS
+// CORS settings
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -98,11 +103,29 @@ builder.Services.AddCors(options =>
 // Build the app.
 var app = builder.Build();
 
+// Initialize the database Roles
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await DbInitializer.Initialize(services);
+    }
+    catch (Exception ex)
+    {
+        // Error handling
+        Console.WriteLine("Error occured during initialization " + ex.Message);
+    }
+}
+
 // Use CORS
 app.UseCors("AllowAll");
 
-// Use authentication
+// Use Authentication
 app.UseAuthentication();
+
+// Use Authorization
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -112,8 +135,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

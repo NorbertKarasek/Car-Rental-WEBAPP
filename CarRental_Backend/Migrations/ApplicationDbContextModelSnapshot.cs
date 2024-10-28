@@ -79,9 +79,6 @@ namespace CarRental_Backend.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -104,7 +101,6 @@ namespace CarRental_Backend.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("ApplicationUserId")
@@ -112,11 +108,9 @@ namespace CarRental_Backend.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("DateOfBirth")
@@ -134,7 +128,6 @@ namespace CarRental_Backend.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LicenseNumber")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
@@ -160,7 +153,6 @@ namespace CarRental_Backend.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("ApplicationUserId")
@@ -168,14 +160,12 @@ namespace CarRental_Backend.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -191,23 +181,19 @@ namespace CarRental_Backend.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Position")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("Salary")
+                    b.Property<decimal?>("Salary")
                         .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.HasKey("Employee_id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
@@ -462,8 +448,8 @@ namespace CarRental_Backend.Migrations
             modelBuilder.Entity("CarRental_Backend.Models.Employees", b =>
                 {
                     b.HasOne("CarRental_Backend.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
+                        .WithOne("Employee")
+                        .HasForeignKey("CarRental_Backend.Models.Employees", "ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -551,6 +537,9 @@ namespace CarRental_Backend.Migrations
             modelBuilder.Entity("CarRental_Backend.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Client")
+                        .IsRequired();
+
+                    b.Navigation("Employee")
                         .IsRequired();
                 });
 

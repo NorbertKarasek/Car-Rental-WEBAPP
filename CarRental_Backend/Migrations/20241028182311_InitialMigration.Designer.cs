@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRental_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241027223450_UpdateModels1")]
-    partial class UpdateModels1
+    [Migration("20241028182311_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,9 +82,6 @@ namespace CarRental_Backend.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -106,45 +103,41 @@ namespace CarRental_Backend.Migrations
                     b.Property<string>("Client_id")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Client_Address")
-                        .IsRequired()
+                    b.Property<string>("City")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Client_City")
-                        .IsRequired()
+                    b.Property<string>("Country")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Client_Country")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("Client_Date_of_birth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Client_Email")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Client_Name")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Client_Phone")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Client_Surname")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("License_issue_date")
+                    b.Property<DateTime?>("LicenseIssueDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("License_number")
+                    b.Property<string>("LicenseNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -162,55 +155,48 @@ namespace CarRental_Backend.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Employee_Address")
-                        .IsRequired()
+                    b.Property<string>("City")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_City")
-                        .IsRequired()
+                    b.Property<string>("Country")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_Country")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("Employee_Date_of_birth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Employee_Email")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_Name")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_Phone")
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Employee_Position")
-                        .IsRequired()
+                    b.Property<string>("Position")
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("Employee_Salary")
+                    b.Property<decimal?>("Salary")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("Employee_Surname")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Employee_id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
@@ -223,35 +209,15 @@ namespace CarRental_Backend.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Car_id"));
 
-                    b.Property<string>("Car_Brand")
+                    b.Property<string>("Brand")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Car_Color")
+                    b.Property<string>("Class")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("Car_Gear_is_automatic")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("Car_Mileage")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Car_Model")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Car_PricePerDay")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<string>("Car_Type")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Car_Year")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Car_class")
+                    b.Property<string>("Color")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -259,8 +225,28 @@ namespace CarRental_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsAutomatic")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("IsFree")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Mileage")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("PricePerDay")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Car_id");
 
@@ -465,8 +451,8 @@ namespace CarRental_Backend.Migrations
             modelBuilder.Entity("CarRental_Backend.Models.Employees", b =>
                 {
                     b.HasOne("CarRental_Backend.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
+                        .WithOne("Employee")
+                        .HasForeignKey("CarRental_Backend.Models.Employees", "ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -554,6 +540,9 @@ namespace CarRental_Backend.Migrations
             modelBuilder.Entity("CarRental_Backend.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Client")
+                        .IsRequired();
+
+                    b.Navigation("Employee")
                         .IsRequired();
                 });
 

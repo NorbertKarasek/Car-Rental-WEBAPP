@@ -14,7 +14,7 @@ namespace CarRental_Backend.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Passwords do not match.")]
+        [Compare("Password", ErrorMessage = "Hasła nie są identyczne.")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -25,6 +25,10 @@ namespace CarRental_Backend.Models
 
         [Required]
         public string PhoneNumber { get; set; }
+
+        [Required]
+        [RegularExpression("^(Client|Employee)$", ErrorMessage = "Role cloud be only 'Client' or 'Employee'.")]
+        public string Role { get; set; } // "Client" or "Employee"
     }
 
     public class LoginModel
