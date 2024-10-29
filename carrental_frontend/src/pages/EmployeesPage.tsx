@@ -3,9 +3,9 @@ import api from '../api/axios';
 
 interface Employee {
     employee_id: string;
-    employee_Name: string;
-    employee_Surname: string;
-    employee_Position: string;
+    firstName: string;
+    surname: string;
+    position: string;
     // Add more fields
 }
 
@@ -28,7 +28,7 @@ const EmployeesPage: React.FC = () => {
             <ul>
                 {employees.map(emp => (
                     <li key={emp.employee_id}>
-                        {emp.employee_Name} {emp.employee_Surname} - {emp.employee_Position}
+                        {emp.firstName} {emp.surname} - {emp.position}
                     </li>
                 ))}
             </ul>

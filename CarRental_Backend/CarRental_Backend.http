@@ -1,4 +1,4 @@
-@CarRental_Backend_HostAddress = http://localhost:5004
+@CarRental_Backend_HostAddress = http://localhost:7209
 
 GET {{CarRental_Backend_HostAddress}}
 Accept: application/json

@@ -4,12 +4,12 @@ import api from '../api/axios';
 
 interface Car {
     car_id: number;
-    car_Brand: string;
-    car_Model: string;
-    car_Year: number;
-    car_Mileage: number;
-    car_Color: string;
-    car_PricePerDay: number;
+    brand: string;
+    model: string;
+    year: number;
+    mileage: number;
+    color: string;
+    pricePerDay: number;
     // Add more fields
 }
 
@@ -33,11 +33,11 @@ const CarDetailsPage: React.FC = () => {
 
     return (
         <div>
-            <h1>{car.car_Brand} {car.car_Model}</h1>
-            <p>Rok produkcji: {car.car_Year}</p>
-            <p>Przebieg: {car.car_Mileage} km</p>
-            <p>Kolor: {car.car_Color}</p>
-            <p>Cena za dzień: {car.car_PricePerDay} PLN</p>
+            <h1>{car.brand} {car.model}</h1>
+            <p>Rok produkcji: {car.year}</p>
+            <p>Przebieg: {car.mileage} km</p>
+            <p>Kolor: {car.color}</p>
+            <p>Cena za dzień: {car.pricePerDay} PLN</p>
             {/* Put more informations if needed */}
         </div>
     );

@@ -5,13 +5,13 @@ import api from '../api/axios';
 const RegisterPage: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        Email: '',
-        Password: '',
-        ConfirmPassword: '',
-        FirstName: '',
-        LastName: '',
-        PhoneNumber: '',
-        Role: 'Client' // By default we register as a customer
+        email: '',
+        password: '',
+        confirmPassword: '',
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        role: 'Client' // By default, we register as a customer
     });
 
     const handleRegister = (e: React.FormEvent) => {
@@ -38,27 +38,27 @@ const RegisterPage: React.FC = () => {
             <form onSubmit={handleRegister}>
                 <div>
                     <label>Imię:</label>
-                    <input type="text" name="firstName" value={formData.FirstName} onChange={handleChange} required />
+                    <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
                 </div>
                 <div>
                     <label>Nazwisko:</label>
-                    <input type="text" name="lastName" value={formData.LastName} onChange={handleChange} required />
+                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
                 </div>
                 <div>
                     <label>Telefon:</label>
-                    <input type="text" name="phoneNumber" value={formData.PhoneNumber} onChange={handleChange} required />
+                    <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
                 </div>
                 <div>
                     <label>Email:</label>
-                    <input type="email" name="email" value={formData.Email} onChange={handleChange} required />
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} required />
                 </div>
                 <div>
                     <label>Hasło:</label>
-                    <input type="password" name="password" value={formData.Password} onChange={handleChange} required />
+                    <input type="password" name="password" value={formData.password} onChange={handleChange} required />
                 </div>
                 <div>
                     <label>Potwierdź hasło:</label>
-                    <input type="password" name="confirmPassword" value={formData.ConfirmPassword} onChange={handleChange} required />
+                    <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
                 </div>
                 {/* If you want to enable role selection (admins only), you can add a checkbox */}
                 {/* <div>
