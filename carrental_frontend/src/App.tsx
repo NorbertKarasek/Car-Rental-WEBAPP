@@ -10,6 +10,8 @@ import RegisterPage from './pages/RegisterPage';
 import Navbar from "./components/Navbar";
 import PrivateRoute from './components/PrivateRoute';
 import UnauthorizedPage from './pages/UnauthorizedPage';
+import ClientsPage from './pages/ClientsPage';
+import ProfilePage from './pages/ProfilePage';
 
 
 function App() {
@@ -32,6 +34,22 @@ function App() {
                   element={
                       <PrivateRoute roles={['Employee', 'Administrator']}>
                           <EmployeesPage />
+                      </PrivateRoute>
+                  }
+              />
+              <Route
+                  path="/clients"
+                  element={
+                      <PrivateRoute roles={['Employee', 'Administrator']}>
+                          <ClientsPage />
+                      </PrivateRoute>
+                  }
+              />
+              <Route
+                  path="/profile"
+                  element={
+                      <PrivateRoute>
+                          <ProfilePage />
                       </PrivateRoute>
                   }
               />
