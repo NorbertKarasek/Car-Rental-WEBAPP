@@ -69,7 +69,7 @@ namespace CarRental_Backend.Controllers
         // PUT: api/Employees/MyProfile
         [Authorize(Roles = "Employee,Administrator")]
         [HttpPut("MyProfile")]
-        public async Task<IActionResult> UpdateMyProfile([FromBody] Employees updatedEmployee)
+        public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateEmployeeProfileDto updatedEmployeeDto)
         {
             var userId = User.Claims
             .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
@@ -83,14 +83,14 @@ namespace CarRental_Backend.Controllers
             }
 
             // Update employee properties with new values
-            employee.FirstName = updatedEmployee.FirstName;
-            employee.Surname = updatedEmployee.Surname;
-            employee.PhoneNumber = updatedEmployee.PhoneNumber;
-            employee.Address = updatedEmployee.Address;
-            employee.City = updatedEmployee.City;
-            employee.Country = updatedEmployee.Country;
-            employee.DateOfBirth = updatedEmployee.DateOfBirth;
-            employee.Position = updatedEmployee.Position;
+            employee.FirstName = updatedEmployeeDto.FirstName;
+            employee.Surname = updatedEmployeeDto.Surname;
+            employee.PhoneNumber = updatedEmployeeDto.PhoneNumber;
+            employee.Address = updatedEmployeeDto.Address;
+            employee.City = updatedEmployeeDto.City;
+            employee.Country = updatedEmployeeDto.Country;
+            employee.DateOfBirth = updatedEmployeeDto.DateOfBirth;
+            employee.Position = updatedEmployeeDto.Position;
 
             // Dont allow to change salary by this method - only by administrator
 

@@ -64,17 +64,15 @@ namespace CarRental_Backend.Controllers
             return Ok(client);
         }
 
-        // PUT: api/Clients/MyProfileChanges
+        // PUT: api/Clients/MyProfile
         [Authorize(Roles = "Client")]
         [HttpPut("MyProfile")]
-        public async Task<IActionResult> UpdateMyProfile([FromBody] Clients updatedClient)
+        public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateClientProfileDto updatedClientDto)
         {
             var userId = User.Claims
-            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
-            .Select(c => c.Value)
-            .FirstOrDefault(value => Guid.TryParse(value, out _));
-
-            _logger.LogInformation("User ID (nameidentifier as GUID): {UserId}", userId);
+                .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+                .Select(c => c.Value)
+                .FirstOrDefault(value => Guid.TryParse(value, out _));
 
             var client = await _context.Clients.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
 
@@ -84,22 +82,21 @@ namespace CarRental_Backend.Controllers
             }
 
             // Update client properties with new values
-            client.FirstName = updatedClient.FirstName;
-            client.Surname = updatedClient.Surname;
-            client.PhoneNumber = updatedClient.PhoneNumber;
-            client.Address = updatedClient.Address;
-            client.City = updatedClient.City;
-            client.Country = updatedClient.Country;
-            client.DateOfBirth = updatedClient.DateOfBirth;
-            client.LicenseNumber = updatedClient.LicenseNumber;
-            client.LicenseIssueDate = updatedClient.LicenseIssueDate;
-
-            // Dont let user change email and applicationUserId
+            client.FirstName = updatedClientDto.FirstName;
+            client.Surname = updatedClientDto.Surname;
+            client.PhoneNumber = updatedClientDto.PhoneNumber;
+            client.Address = updatedClientDto.Address;
+            client.City = updatedClientDto.City;
+            client.Country = updatedClientDto.Country;
+            client.DateOfBirth = updatedClientDto.DateOfBirth;
+            client.LicenseNumber = updatedClientDto.LicenseNumber;
+            client.LicenseIssueDate = updatedClientDto.LicenseIssueDate;
 
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
 
     }
 }
