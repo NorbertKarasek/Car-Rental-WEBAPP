@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace CarRental_Backend.Controllers
@@ -28,7 +29,7 @@ namespace CarRental_Backend.Controllers
         }
 
 
-        // GET: api/Employee/index
+        // GET: api/Employee/ById/{id}
         [Authorize]
         [HttpGet("ById/{id}")]
         public async Task<ActionResult<Employees>> GetEmployee(int id)
@@ -49,7 +50,11 @@ namespace CarRental_Backend.Controllers
         [HttpGet("MyProfile")]
         public async Task<ActionResult<Employees>> GetMyProfile()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.Claims
+            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+            .Select(c => c.Value)
+            .FirstOrDefault(value => Guid.TryParse(value, out _));
+
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
 
             if (employee == null)
@@ -66,7 +71,10 @@ namespace CarRental_Backend.Controllers
         [HttpPut("MyProfile")]
         public async Task<IActionResult> UpdateMyProfile([FromBody] Employees updatedEmployee)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.Claims
+            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+            .Select(c => c.Value)
+            .FirstOrDefault(value => Guid.TryParse(value, out _));
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
 
             if (employee == null)

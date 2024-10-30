@@ -13,10 +13,12 @@ namespace CarRental_Backend.Controllers
     public class ClientsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<ClientsController> _logger;
 
-        public ClientsController(ApplicationDbContext context)
+        public ClientsController(ApplicationDbContext context, ILogger<ClientsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Clients
@@ -27,7 +29,7 @@ namespace CarRental_Backend.Controllers
             return await _context.Clients.ToListAsync();
         }
 
-        // GET: api/Clients/{id}
+        // GET: api/Clients/ById/{id}
         [Authorize(Roles = "Employee,Administrator")]
         [HttpGet("ById/{id}")]
         public async Task<ActionResult<Clients>> GetClient(string id)
@@ -47,7 +49,11 @@ namespace CarRental_Backend.Controllers
         [HttpGet("MyProfile")]
         public async Task<ActionResult<Clients>> GetMyProfile()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var userId = User.Claims
+            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+            .Select(c => c.Value)
+            .FirstOrDefault(value => Guid.TryParse(value, out _));
             var client = await _context.Clients.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
 
             if (client == null)
@@ -63,7 +69,13 @@ namespace CarRental_Backend.Controllers
         [HttpPut("MyProfile")]
         public async Task<IActionResult> UpdateMyProfile([FromBody] Clients updatedClient)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.Claims
+            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+            .Select(c => c.Value)
+            .FirstOrDefault(value => Guid.TryParse(value, out _));
+
+            _logger.LogInformation("User ID (nameidentifier as GUID): {UserId}", userId);
+
             var client = await _context.Clients.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
 
             if (client == null)
