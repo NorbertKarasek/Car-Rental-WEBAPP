@@ -198,42 +198,73 @@ namespace CarRental_Backend.Controllers
         public async Task<IActionResult> GetMyRentals()
         {
             var userId = User.Claims
-            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
-            .Select(c => c.Value)
-            .FirstOrDefault(value => Guid.TryParse(value, out _));
+                .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+                .Select(c => c.Value)
+                .FirstOrDefault(value => Guid.TryParse(value, out _));
 
-            // Get client by userId
+            // Check if the user is a client
             var client = await _context.Clients.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
-            if (client == null)
+            if (client != null)
             {
-                return NotFound("Nie znaleziono klienta.");
+                var rentals = await _context.Rentals
+                    .Include(r => r.Car)
+                    .Where(r => r.Client_id == client.Client_id)
+                    .Select(r => new RentalDTO
+                    {
+                        Rental_id = r.Rental_id,
+                        Rental_date = r.Rental_date,
+                        Return_date = r.Return_date,
+                        Rental_price = r.Rental_price,
+                        Discount = r.Discount,
+                        AdditionalFees = r.AdditionalFees,
+                        IsReturned = r.IsReturned,
+                        Return_date_actual = r.Return_date_actual,
+                        Car = new CarDTO
+                        {
+                            Car_id = r.Car.Car_id,
+                            Brand = r.Car.Brand,
+                            Model = r.Car.Model,
+                            // add other needed fields
+                        }
+                        // You can provide ClientDTO if it is not needed
+                    })
+                    .ToListAsync();
+
+                return Ok(rentals);
             }
 
-            var rentals = await _context.Rentals
-                .Include(r => r.Car)
-                .Where(r => r.Client_id == client.Client_id)
-                .Select(r => new RentalDTO
-                {
-                    Rental_id = r.Rental_id,
-                    Rental_date = r.Rental_date,
-                    Return_date = r.Return_date,
-                    Rental_price = r.Rental_price,
-                    Discount = r.Discount,
-                    AdditionalFees = r.AdditionalFees,
-                    IsReturned = r.IsReturned,
-                    Return_date_actual = r.Return_date_actual,
-                    Car = new CarDTO
+            // Check if the user is an employee
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
+            if (employee != null)
+            {
+                var rentals = await _context.Rentals
+                    .Include(r => r.Car)
+                    .Where(r => r.Employee_id == employee.Employee_id)
+                    .Select(r => new RentalDTO
                     {
-                        Car_id = r.Car.Car_id,
-                        Brand = r.Car.Brand,
-                        Model = r.Car.Model,
-                        // add other needed fields
-                    }
-                    // You can provide ClientDTO if it is not needed
-                })
-                .ToListAsync();
+                        Rental_id = r.Rental_id,
+                        Rental_date = r.Rental_date,
+                        Return_date = r.Return_date,
+                        Rental_price = r.Rental_price,
+                        Discount = r.Discount,
+                        AdditionalFees = r.AdditionalFees,
+                        IsReturned = r.IsReturned,
+                        Return_date_actual = r.Return_date_actual,
+                        Car = new CarDTO
+                        {
+                            Car_id = r.Car.Car_id,
+                            Brand = r.Car.Brand,
+                            Model = r.Car.Model,
+                            // add other needed fields
+                        }
+                        // You can provide ClientDTO if it is not needed
+                    })
+                    .ToListAsync();
 
-            return Ok(rentals);
+                return Ok(rentals);
+            }
+
+            return NotFound("User not found.");
         }
 
 

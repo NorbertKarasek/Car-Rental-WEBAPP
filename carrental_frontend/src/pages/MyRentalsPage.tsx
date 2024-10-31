@@ -27,7 +27,7 @@ const MyRentalsPage: React.FC = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
-            alert('Musisz być zalogowany, aby uzyskać dostęp do tej strony.');
+            alert('You have to be logged in to see your rentals.');
             navigate('/login');
             return;
         }
@@ -37,8 +37,8 @@ const MyRentalsPage: React.FC = () => {
                 setRentals(response.data as Rental[]);
             })
             .catch(error => {
-                console.error('Błąd podczas pobierania Twoich wynajmów:', error);
-                alert('Błąd podczas pobierania Twoich wynajmów.');
+                console.error('Error occurred during downloading your rentals', error);
+                alert('Error occurred during downloading your rentals');
             });
     }, [navigate]);
 
