@@ -31,13 +31,14 @@ const Navbar: React.FC = () => {
                     <>
                         Witaj, {userName}!
                         <li><Link to="/profile">Mój Profil</Link></li>
+                        <li><Link to="/myrentals">Moje Wynajmy</Link></li>
                         <li>
                             <button onClick={handleLogout}>Wyloguj się</button>
                         </li>
                     </>
                 ) : (
                     <>
-                        <li><Link to="/login">Logowanie</Link></li>
+                    <li><Link to="/login">Logowanie</Link></li>
                         <li><Link to="/register">Rejestracja</Link></li>
                     </>
                 )}
@@ -51,6 +52,9 @@ const Navbar: React.FC = () => {
                 )}
                 {isEmployee && (
                     <li><Link to="/employees">Pracownicy</Link></li>
+                )}
+                {isEmployee && (
+                    <li><Link to="/rentals">Wynajmy</Link></li>
                 )}
 
             </ul>

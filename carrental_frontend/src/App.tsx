@@ -12,6 +12,8 @@ import PrivateRoute from './components/PrivateRoute';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ClientsPage from './pages/ClientsPage';
 import ProfilePage from './pages/ProfilePage';
+import RentalsPage from './pages/RentalsPage';
+import MyRentalsPage from './pages/MyRentalsPage';
 
 
 function App() {
@@ -29,6 +31,14 @@ function App() {
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
               {/* Private routes */}
+              <Route
+                  path="/myrentals"
+                  element={
+                      <PrivateRoute>
+                          <MyRentalsPage />
+                      </PrivateRoute>
+                  }
+              />
               <Route
                   path="/employees"
                   element={
@@ -53,6 +63,14 @@ function App() {
                       </PrivateRoute>
                   }
               />
+              <Route
+                  path="/rentals"
+                  element={
+                      <PrivateRoute roles={['Employee', 'Administrator']}>
+                          <RentalsPage />
+                      </PrivateRoute>
+                  }
+                />
               {/* Add more private routes */}
           </Routes>
         {/* You can add components here, ex. Footer */}

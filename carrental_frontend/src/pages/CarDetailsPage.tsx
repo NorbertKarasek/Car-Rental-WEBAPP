@@ -11,14 +11,18 @@ interface Car {
     mileage: number;
     color: string;
     pricePerDay: number;
+    isAutomatic: boolean;
+    class: string;
+    description: string;
     // Add more fields
 }
 
 const CarDetailsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [car, setCar] = useState<Car | null>(null);
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [Rental_date, setRental_date] = useState('');
+    const [Return_date, setReturn_date] = useState('');
+    const [rentalPrice, setRentalPrice] = useState(0);
 
     useEffect(() => {
         api.get(`/Cars/${id}`)
@@ -30,6 +34,20 @@ const CarDetailsPage: React.FC = () => {
             });
     }, [id]);
 
+    useEffect(() => {
+        if (Rental_date && Return_date) {
+            const start = new Date(Rental_date);
+            const end = new Date(Return_date);
+
+            const days = (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
+            if (days > 0 && car) {
+                setRentalPrice(days * car.pricePerDay);
+            } else {
+                setRentalPrice(0);
+            }
+        }
+    }, [Rental_date, Return_date, car]);
+
     const handleRent = () => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -37,30 +55,29 @@ const CarDetailsPage: React.FC = () => {
             return;
         }
 
-        const decoded: any = jwtDecode(token);
-        const clientId = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
-
         const rentalData = {
-            carId: car?.car_id,
-            clientId: clientId,
-            startDate: startDate,
-            endDate: endDate
+            Car_id: car?.car_id,
+            Rental_date: Rental_date,
+            Return_date: Return_date
         };
 
-        api.post('/Rentals', rentalData)
+        api.post('/Rentals/RentACar', rentalData)
             .then(response => {
                 alert('Car rented successfully!');
                 // You can redirect to another page here
             })
             .catch(error => {
-                console.error('Error occured during car rental', error);
+                console.error('Error occurred during car rental', error);
                 alert('Error occurred during car rental. Please try again later.');
             });
     };
 
+
     if (!car) {
         return <div>Ładowanie...</div>;
     }
+
+    const today = new Date().toISOString().split('T')[0];
 
     return (
         <div>
@@ -69,18 +86,24 @@ const CarDetailsPage: React.FC = () => {
             <p>Przebieg: {car.mileage} km</p>
             <p>Kolor: {car.color}</p>
             <p>Cena za dzień: {car.pricePerDay} PLN</p>
+            <p>Klasa: {car.class}</p>
+            <p>Opis: {car.description}</p>
             {/* Add more car details here */}
 
             <h2>Wynajmij ten samochód</h2>
-            <form onSubmit={(e) => { e.preventDefault(); handleRent(); }}>
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                handleRent();
+            }}>
                 <div>
                     <label>Data rozpoczęcia:</label>
-                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
+                    <input type="date" value={Rental_date} onChange={e => setRental_date(e.target.value)} min={today} required/>
                 </div>
                 <div>
                     <label>Data zakończenia:</label>
-                    <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
+                    <input type="date" value={Return_date} onChange={e => setReturn_date(e.target.value)} min={today} required/>
                 </div>
+                <p>Cena wynajmu: {rentalPrice} PLN</p>
                 <button type="submit">Wynajmij</button>
             </form>
         </div>

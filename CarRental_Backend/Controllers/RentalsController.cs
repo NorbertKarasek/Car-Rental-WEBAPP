@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using CarRental_Backend.Data;
 using CarRental_Backend.Models;
+using CarRental_Backend.DTO;
 
 namespace CarRental_Backend.Controllers
 {
@@ -21,7 +22,7 @@ namespace CarRental_Backend.Controllers
 
         // GET: api/Rentals/RentACar
         [HttpPost("RentACar")]
-        [Authorize] 
+        [Authorize]
         public async Task<IActionResult> CreateRental([FromBody] CreateRentalModel model)
         {
             if (!ModelState.IsValid)
@@ -33,15 +34,25 @@ namespace CarRental_Backend.Controllers
                 return NotFound("Car not found!");
 
             if (!car.IsFree)
-                return BadRequest("Car is not avilable now.");
+                return BadRequest("Car is not available now.");
 
             // Get logged in user
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.Claims
+            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+            .Select(c => c.Value)
+            .FirstOrDefault(value => Guid.TryParse(value, out _));
             var client = await _context.Clients.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
             if (client == null)
                 return NotFound("Client not found");
 
             // Create new rental
+            var employeeWithLeastRentals = await _context.Employees
+                .OrderBy(e => _context.Rentals.Count(r => r.Employee_id == e.Employee_id))
+                .FirstOrDefaultAsync();
+
+            if (employeeWithLeastRentals == null)
+                return NotFound("No employees found.");
+
             var rental = new Rentals
             {
                 Car_id = car.Car_id,
@@ -50,6 +61,7 @@ namespace CarRental_Backend.Controllers
                 Return_date = model.Return_date,
                 Rental_price = 0, // Will be calculated later
                 Discount = 0,
+                Employee_id = employeeWithLeastRentals.Employee_id,
                 IsReturned = false
             };
 
@@ -68,8 +80,23 @@ namespace CarRental_Backend.Controllers
             // Save changes
             await _context.SaveChangesAsync();
 
-            return Ok(rental);
+            // Map rental to DTO
+            var rentalDTO = new RentalDTO
+            {
+                Rental_id = rental.Rental_id,
+                Car_id = rental.Car_id,
+                Client_id = rental.Client_id,
+                Rental_date = rental.Rental_date,
+                Return_date = rental.Return_date,
+                Rental_price = rental.Rental_price,
+                IsReturned = rental.IsReturned,
+
+                // Add more fields if needed
+            };
+
+            return Ok(rentalDTO);
         }
+
 
 
         // GET: api/Rentals/{id}/ConfirmReturn
@@ -140,8 +167,10 @@ namespace CarRental_Backend.Controllers
         // GET: api/Rentals/{id}/ApplyDiscount
         [HttpPut("{id}/ApplyDiscount")]
         [Authorize(Roles = "Employee,Administrator")]
-        public async Task<IActionResult> ApplyDiscount(int id, [FromBody] decimal discount)
+        public async Task<IActionResult> ApplyDiscount(int id, [FromBody] DiscountModel model)
         {
+            var discount = model.Discount;
+
             var rental = await _context.Rentals.Include(r => r.Car).FirstOrDefaultAsync(r => r.Rental_id == id);
             if (rental == null)
                 return NotFound("Rental not found!");
@@ -151,10 +180,10 @@ namespace CarRental_Backend.Controllers
 
             rental.Discount += discount;
 
-            // Oblicz liczbę dni wynajmu
+            // Count number of days again
             int numberOfDays = (rental.Return_date - rental.Rental_date).Days;
 
-            // Ponowne obliczenie ceny
+            // Count new rental price
             rental.Rental_price = CalculateRentalPrice(rental.Car.PricePerDay, numberOfDays, rental.Discount);
 
             await _context.SaveChangesAsync();
@@ -168,14 +197,46 @@ namespace CarRental_Backend.Controllers
         [Authorize]
         public async Task<IActionResult> GetMyRentals()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.Claims
+            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+            .Select(c => c.Value)
+            .FirstOrDefault(value => Guid.TryParse(value, out _));
+
+            // Get client by userId
+            var client = await _context.Clients.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
+            if (client == null)
+            {
+                return NotFound("Nie znaleziono klienta.");
+            }
+
             var rentals = await _context.Rentals
                 .Include(r => r.Car)
-                .Where(r => r.Client_id == userId)
+                .Where(r => r.Client_id == client.Client_id)
+                .Select(r => new RentalDTO
+                {
+                    Rental_id = r.Rental_id,
+                    Rental_date = r.Rental_date,
+                    Return_date = r.Return_date,
+                    Rental_price = r.Rental_price,
+                    Discount = r.Discount,
+                    AdditionalFees = r.AdditionalFees,
+                    IsReturned = r.IsReturned,
+                    Return_date_actual = r.Return_date_actual,
+                    Car = new CarDTO
+                    {
+                        Car_id = r.Car.Car_id,
+                        Brand = r.Car.Brand,
+                        Model = r.Car.Model,
+                        // add other needed fields
+                    }
+                    // You can provide ClientDTO if it is not needed
+                })
                 .ToListAsync();
 
             return Ok(rentals);
         }
+
+
 
 
         // GET: api/Rentals/AllRentals
@@ -183,7 +244,38 @@ namespace CarRental_Backend.Controllers
         [Authorize(Roles = "Employee,Administrator")]
         public async Task<IActionResult> GetAllRentals()
         {
-            var rentals = await _context.Rentals.Include(r => r.Car).Include(r => r.Client).ToListAsync();
+            var rentals = await _context.Rentals
+                .Include(r => r.Car)
+                .Include(r => r.Client)
+                .Select(r => new RentalDTO
+                {
+                    Rental_id = r.Rental_id,
+                    Rental_date = r.Rental_date,
+                    Return_date = r.Return_date,
+                    Rental_price = r.Rental_price,
+                    Discount = r.Discount,
+                    AdditionalFees = r.AdditionalFees,
+                    IsReturned = r.IsReturned,
+                    Return_date_actual = r.Return_date_actual,
+                    Car = new CarDTO
+                    {
+                        Car_id = r.Car.Car_id,
+                        Brand = r.Car.Brand,
+                        Model = r.Car.Model,
+                        // Add other needed fields
+                    },
+                    Client = new ClientDTO
+                    {
+                        Client_id = r.Client.Client_id,
+                        FirstName = r.Client.FirstName,
+                        Surname = r.Client.Surname,
+                        Email = r.Client.Email,
+                        PhoneNumber = r.Client.PhoneNumber,
+                        // Add other needed fields
+                    }
+                })
+                .ToListAsync();
+
             return Ok(rentals);
         }
 
