@@ -343,8 +343,8 @@ app.Run();
 - **Migracje Bazy Danych**: Należy uruchomić migracje, aby zaktualizować strukturę bazy danych zgodnie z modelami.
 
 ```bash
-dotnet ef migrations add InitialCreate
-dotnet ef database update
+Add-Migration InitialCreate
+Update-Database
 ```
 
 - **Bezpieczeństwo**: Poufne dane są przechowywane w zmiennych środowiskowych lub w narzędziach takich jak User Secrets podczas developmentu.
@@ -352,13 +352,7 @@ dotnet ef database update
 - **Konfiguracja Haseł**: Wymagania dotyczące haseł można dostosować w metodzie `ConfigureIdentity` w `ServiceExtensions.cs`.
 - **Obsługa Błędów**: Warto zaimplementować globalną obsługę błędów i logowanie.
 
-**Autor**: Twój zespół deweloperski
+**Autor**: Norbert Karasek
 
-**Data Aktualizacji**: [Data]
-
-**Uwagi Końcowe**
-
-- Dokumentacja powinna być aktualizowana wraz ze zmianami w projekcie.
-- Rozważ dodanie szczegółów dotyczących implementacji kontrolerów, usług oraz przykładów użycia API.
-- Zadbaj o odpowiednie zabezpieczenia przed udostępnieniem aplikacji w środowisku produkcyjnym.
+**Data Aktualizacji**: 03.11.2024
 ```
