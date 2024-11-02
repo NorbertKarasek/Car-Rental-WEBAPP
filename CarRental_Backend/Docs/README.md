@@ -40,7 +40,7 @@
 - **C# 10**
 
 ## Struktura Projektu
-```
+
 CarRental_Backend/
 ├── Controllers/
 │   └── (Kontrolery API)
