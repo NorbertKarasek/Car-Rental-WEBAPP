@@ -794,10 +794,11 @@ Content-Type: application/json
 
 ## Contact
 
-For any questions or issues, please contact the development team at [your-email@example.com].
+For any questions or issues, please contact me at [norbert.karasek94@gmail.com].
 
 ---
 
 **Note**: This documentation is generated based on the current state of the controllers. Please ensure that the API endpoints and models match the latest implementation in your project.
+**Date**: 2024-11-03
 
 ---
