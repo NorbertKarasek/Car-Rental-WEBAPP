@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using CarRental_Backend.Models;
 using System.Threading.Tasks;
 using CarRental_Backend.Services;
-using CarRental_Backend.Data.Configuration;
+using CarRental_Backend.Data;
 
 namespace CarRental_Backend.Controllers
 {

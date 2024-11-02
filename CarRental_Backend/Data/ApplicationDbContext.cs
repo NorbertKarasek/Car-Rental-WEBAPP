@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarRental_Backend.Data.Configuration
+namespace CarRental_Backend.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using CarRental_Backend.Models;
 using CarRental_Backend.DTO;
-using CarRental_Backend.Data.Configuration;
+using CarRental_Backend.Data;
 
 namespace CarRental_Backend.Controllers
 {
