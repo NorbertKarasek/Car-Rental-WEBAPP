@@ -234,10 +234,10 @@ public class TokenService
 Kontrolery API obsługują żądania HTTP i zarządzają logiką biznesową:
 
 - **AuthController**: Rejestracja i logowanie użytkowników.
-- **CarsController**: Zarządzanie samochodami.
-- **RentalsController**: Zarządzanie wypożyczeniami.
-- **ClientsController**: Zarządzanie profilami klientów.
-- **EmployeesController**: Zarządzanie profilami pracowników.
+- **CarController**: Zarządzanie samochodami.
+- **RentalController**: Zarządzanie wypożyczeniami.
+- **ClientController**: Zarządzanie profilami klientów.
+- **EmployeeController**: Zarządzanie profilami pracowników.
 
 ## Autentykacja i Autoryzacja
 - **Autentykacja**: JWT; token JWT musi być dołączany do kolejnych żądań w nagłówku `Authorization: Bearer {token}`.
