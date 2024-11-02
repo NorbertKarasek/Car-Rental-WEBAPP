@@ -1,36 +1,39 @@
-﻿```markdown
-# Dokumentacja Projektu CarRental_Backend
+﻿# CarRental_Backend
 
 ## Spis Treści
-- **Opis Projektu**
-- **Technologie**
-- **Struktura Projektu**
-- **Konfiguracja**
-  - **appsettings.json**
-  - **Zmienne Środowiskowe**
-- **Modele Danych**
-- **Data Transfer Objects (DTO)**
-- **Usługi (Services)**
-- **Kontrolery**
-- **Autentykacja i Autoryzacja**
-- **Inicjalizacja Bazy Danych**
-- **Konfiguracje Encji**
-- **Rozszerzenia (Extensions)**
-- **Środowisko Uruchomieniowe**
-- **Dodatkowe Informacje**
+- [Opis Projektu](#opis-projektu)
+- [Technologie](#technologie)
+- [Struktura Projektu](#struktura-projektu)
+- [Konfiguracja](#konfiguracja)
+  - [appsettings.json](#appsettingsjson)
+  - [Zmienne Środowiskowe](#zmienne-środowiskowe)
+- [Modele Danych](#modele-danych)
+- [Data Transfer Objects (DTO)](#data-transfer-objects-dto)
+- [Usługi (Services)](#usługi-services)
+- [Kontrolery](#kontrolery)
+- [Autentykacja i Autoryzacja](#autentykacja-i-autoryzacja)
+- [Inicjalizacja Bazy Danych](#inicjalizacja-bazy-danych)
+- [Konfiguracje Encji](#konfiguracje-encji)
+- [Rozszerzenia (Extensions)](#rozszerzenia-extensions)
+- [Środowisko Uruchomieniowe](#środowisko-uruchomieniowe)
+- [Dodatkowe Informacje](#dodatkowe-informacje)
 
 ## Opis Projektu
-**CarRental_Backend** to aplikacja webowa umożliwiająca zarządzanie wypożyczalnią samochodów. Projekt oferuje funkcjonalności takie jak:
 
-- Rejestracja i logowanie użytkowników (klientów i pracowników)
+**CarRental_Backend** to aplikacja webowa umożliwiająca zarządzanie wypożyczalnią samochodów. Projekt oferuje szeroki zakres funkcjonalności, w tym:
+
+- Rejestracja i logowanie użytkowników (klientów oraz pracowników)
 - Zarządzanie profilami użytkowników
 - Przeglądanie dostępnych samochodów
 - Rezerwacja i wynajem samochodów
 - Zarządzanie wypożyczeniami
-- Przyznawanie zniżek i naliczanie opłat dodatkowych
+- Przyznawanie zniżek oraz naliczanie opłat dodatkowych
 - Autentykacja i autoryzacja z użyciem JWT
 
 ## Technologie
+
+Projekt został zbudowany z wykorzystaniem następujących technologii:
+
 - **.NET 6 (ASP.NET Core 6)**
 - **Entity Framework Core 6**
 - **MySQL Server**
@@ -41,6 +44,7 @@
 
 ## Struktura Projektu
 
+```
 CarRental_Backend/
 ├── Controllers/
 │   └── (Kontrolery API)
@@ -65,6 +69,7 @@ CarRental_Backend/
 ## Konfiguracja
 
 ### appsettings.json
+
 ```json
 {
   "ConnectionStrings": {
@@ -84,15 +89,18 @@ CarRental_Backend/
   "AllowedHosts": "*"
 }
 ```
+
 **Uwaga**: Poufne informacje, takie jak `User Id`, `Password` oraz `Key`, są przechowywane w zmiennych środowiskowych.
 
 ### Zmienne Środowiskowe
+
 - `ConnectionStrings__DefaultConnection`: Pełny connection string do bazy danych, zawierający `User Id` i `Password`.
 - `JwtSettings__Key`: Sekretny klucz używany do generowania tokenów JWT.
 
 ## Modele Danych
 
 ### `ApplicationUser`
+
 Reprezentuje użytkownika systemu.
 
 ```csharp
@@ -107,6 +115,7 @@ public class ApplicationUser : IdentityUser
 ```
 
 ### `Client`
+
 Reprezentuje klienta.
 
 ```csharp
@@ -114,15 +123,19 @@ public class Client
 {
     [Key]
     public string ClientId { get; set; }
+    
     [Required]
     public string FirstName { get; set; }
+    
     // ... pozostałe właściwości
+    
     public string ApplicationUserId { get; set; }
     public ApplicationUser ApplicationUser { get; set; }
 }
 ```
 
 ### `Employee`
+
 Reprezentuje pracownika.
 
 ```csharp
@@ -130,14 +143,18 @@ public class Employee
 {
     [Key]
     public string EmployeeId { get; set; }
+    
     [Required]
     public string ApplicationUserId { get; set; }
+    
     public ApplicationUser ApplicationUser { get; set; }
+    
     // ... pozostałe właściwości
 }
 ```
 
 ### `Car`
+
 Reprezentuje samochód.
 
 ```csharp
@@ -145,14 +162,18 @@ public class Car
 {
     [Key]
     public int CarId { get; set; }
+    
     [Required]
     public string Brand { get; set; }
+    
     // ... pozostałe właściwości
+    
     public ICollection<Rental> Rentals { get; set; }
 }
 ```
 
 ### `Rental`
+
 Reprezentuje wypożyczenie.
 
 ```csharp
@@ -160,10 +181,13 @@ public class Rental
 {
     [Key]
     public int RentalId { get; set; }
+    
     public int CarId { get; set; }
     public Car Car { get; set; }
+    
     public string ClientId { get; set; }
     public Client Client { get; set; }
+    
     // ... pozostałe właściwości
 }
 ```
@@ -177,6 +201,7 @@ public class CarDTO
 {
     public int CarId { get; set; }
     public string Brand { get; set; }
+    
     // ... pozostałe właściwości
 }
 ```
@@ -188,6 +213,7 @@ public class ClientDTO
 {
     public string ClientId { get; set; }
     public string FirstName { get; set; }
+    
     // ... pozostałe właściwości
 }
 ```
@@ -202,6 +228,7 @@ public class RentalDTO
     public CarDTO Car { get; set; }
     public string ClientId { get; set; }
     public ClientDTO Client { get; set; }
+    
     // ... pozostałe właściwości
 }
 ```
@@ -209,6 +236,7 @@ public class RentalDTO
 ## Usługi (Services)
 
 ### `TokenService.cs`
+
 Usługa odpowiedzialna za generowanie tokenów JWT.
 
 ```csharp
@@ -231,6 +259,7 @@ public class TokenService
 ```
 
 ## Kontrolery
+
 Kontrolery API obsługują żądania HTTP i zarządzają logiką biznesową:
 
 - **AuthController**: Rejestracja i logowanie użytkowników.
@@ -240,10 +269,12 @@ Kontrolery API obsługują żądania HTTP i zarządzają logiką biznesową:
 - **EmployeeController**: Zarządzanie profilami pracowników.
 
 ## Autentykacja i Autoryzacja
+
 - **Autentykacja**: JWT; token JWT musi być dołączany do kolejnych żądań w nagłówku `Authorization: Bearer {token}`.
 - **Autoryzacja**: Role (Administrator, Employee, Client) kontrolują dostęp do zasobów.
 
 ## Inicjalizacja Bazy Danych
+
 Plik `DbInitializer.cs` odpowiedzialny jest za:
 
 - Tworzenie ról w systemie (Administrator, Employee, Client).
@@ -261,9 +292,10 @@ public static class DbInitializer
 ```
 
 ## Konfiguracje Encji
-Znajdują się w katalogu `Data/Configurations/` i zawierają konfiguracje encji dla Entity Framework Core.
 
-### Przykład: RentalsConfiguration.cs
+Konfiguracje encji znajdują się w katalogu `Data/Configurations/` i zawierają konfiguracje dla Entity Framework Core.
+
+### Przykład: `RentalsConfiguration.cs`
 
 ```csharp
 public class RentalsConfiguration : IEntityTypeConfiguration<Rental>
@@ -278,6 +310,7 @@ public class RentalsConfiguration : IEntityTypeConfiguration<Rental>
 ## Rozszerzenia (Extensions)
 
 ### `ServiceExtensions.cs`
+
 Zawiera metody rozszerzające do konfiguracji usług:
 
 - **ConfigureDatabase**: Konfiguracja bazy danych.
@@ -288,11 +321,13 @@ Zawiera metody rozszerzające do konfiguracji usług:
 - **ConfigureSwagger**: Konfiguracja Swaggera.
 
 ### `ApplicationBuilderExtensions.cs`
+
 Zawiera metody rozszerzające do konfiguracji aplikacji.
 
 - **SeedDatabaseAsync**: Inicjalizacja bazy danych podczas uruchamiania aplikacji.
 
 ## Środowisko Uruchomieniowe
+
 Plik `Program.cs` jest głównym punktem wejścia aplikacji.
 
 ```csharp
@@ -300,8 +335,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Dodanie zmiennych środowiskowych
 builder.Configuration
-
-.AddEnvironmentVariables();
+    .AddEnvironmentVariables();
 
 // Konfiguracja usług
 builder.Services.ConfigureDatabase(builder.Configuration);
@@ -342,17 +376,47 @@ app.Run();
 
 - **Migracje Bazy Danych**: Należy uruchomić migracje, aby zaktualizować strukturę bazy danych zgodnie z modelami.
 
-```bash
-Add-Migration InitialCreate
-Update-Database
-```
+    ```bash
+    Add-Migration InitialCreate
+    Update-Database
+    ```
 
 - **Bezpieczeństwo**: Poufne dane są przechowywane w zmiennych środowiskowych lub w narzędziach takich jak User Secrets podczas developmentu.
 - **Swagger**: Dostępny pod `/swagger` w środowisku deweloperskim, umożliwia testowanie API.
 - **Konfiguracja Haseł**: Wymagania dotyczące haseł można dostosować w metodzie `ConfigureIdentity` w `ServiceExtensions.cs`.
 - **Obsługa Błędów**: Warto zaimplementować globalną obsługę błędów i logowanie.
 
-**Autor**: Norbert Karasek
+---
 
-**Data Aktualizacji**: 03.11.2024
-```
+## Jak Uruchomić Projekt
+
+1. **Klonowanie Repozytorium**
+    ```bash
+    git clone https://github.com/twoje-repozytorium/CarRental_Backend.git
+    cd CarRental_Backend
+    ```
+
+2. **Konfiguracja Środowiska**
+    - Utwórz plik `.env` lub skonfiguruj zmienne środowiskowe zgodnie z sekcją [Konfiguracja](#konfiguracja).
+
+3. **Instalacja Zależności**
+    ```bash
+    dotnet restore
+    ```
+
+4. **Migracje Bazy Danych**
+    ```bash
+    dotnet ef database update
+    ```
+
+5. **Uruchomienie Aplikacji**
+    ```bash
+    dotnet run
+    ```
+
+6. **Dostęp do Swaggera**
+    - Otwórz przeglądarkę i przejdź do `https://localhost:<port>/swagger`, aby przetestować API.
+
+---
+
+*Dziękujemy za zainteresowanie projektem CarRental!*
