@@ -17,6 +17,7 @@
 - [Rozszerzenia (Extensions)](#rozszerzenia-extensions)
 - [Środowisko Uruchomieniowe](#środowisko-uruchomieniowe)
 - [Dodatkowe Informacje](#dodatkowe-informacje)
+- [Jak Uruchomić Projekt](#jak-uruchomić-projekt)
 
 ## Opis Projektu
 
@@ -392,7 +393,7 @@ app.Run();
 
 1. **Klonowanie Repozytorium**
     ```bash
-    git clone https://github.com/twoje-repozytorium/CarRental_Backend.git
+    git clone https://github.com/NorbertKarasek/Car-Rental-WEBAPP.git
     cd CarRental_Backend
     ```
 

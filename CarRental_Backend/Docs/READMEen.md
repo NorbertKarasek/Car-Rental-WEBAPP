@@ -395,7 +395,7 @@ app.Run();
 
 1. **Clone the Repository**
     ```bash
-    git clone https://github.com/your-repository/CarRental_Backend.git
+    git clone https://github.com/NorbertKarasek/Car-Rental-WEBAPP.git
     cd CarRental_Backend
     ```
 
