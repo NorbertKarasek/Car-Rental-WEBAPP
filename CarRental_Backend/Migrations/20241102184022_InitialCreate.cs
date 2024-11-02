@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CarRental_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,8 +44,6 @@ namespace CarRental_Backend.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
@@ -61,6 +59,8 @@ namespace CarRental_Backend.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ConcurrencyStamp = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    PhoneNumber = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
@@ -74,10 +74,10 @@ namespace CarRental_Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Cars",
+                name: "Car",
                 columns: table => new
                 {
-                    Car_id = table.Column<int>(type: "int", nullable: false)
+                    CarId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Brand = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -99,7 +99,7 @@ namespace CarRental_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cars", x => x.Car_id);
+                    table.PrimaryKey("PK_Car", x => x.CarId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -231,10 +231,10 @@ namespace CarRental_Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Clients",
+                name: "Client",
                 columns: table => new
                 {
-                    Client_id = table.Column<string>(type: "varchar(255)", nullable: false)
+                    ClientId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     FirstName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -259,9 +259,9 @@ namespace CarRental_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clients", x => x.Client_id);
+                    table.PrimaryKey("PK_Client", x => x.ClientId);
                     table.ForeignKey(
-                        name: "FK_Clients_AspNetUsers_ApplicationUserId",
+                        name: "FK_Client_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -270,10 +270,10 @@ namespace CarRental_Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Employees",
+                name: "Employee",
                 columns: table => new
                 {
-                    Employee_id = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
+                    EmployeeId = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ApplicationUserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -298,9 +298,9 @@ namespace CarRental_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.Employee_id);
+                    table.PrimaryKey("PK_Employee", x => x.EmployeeId);
                     table.ForeignKey(
-                        name: "FK_Employees_AspNetUsers_ApplicationUserId",
+                        name: "FK_Employee_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -309,44 +309,44 @@ namespace CarRental_Backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Rentals",
+                name: "Rental",
                 columns: table => new
                 {
-                    Rental_id = table.Column<int>(type: "int", nullable: false)
+                    RentalId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Car_id = table.Column<int>(type: "int", nullable: false),
-                    Client_id = table.Column<string>(type: "varchar(255)", nullable: false)
+                    CarId = table.Column<int>(type: "int", nullable: false),
+                    ClientId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Rental_date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Return_date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Rental_price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    RentalDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ReturnDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    RentalPrice = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     Discount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     AdditionalFees = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     IsReturned = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Return_date_actual = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    Employee_id = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
+                    ReturnDateActual = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    EmployeeId = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rentals", x => x.Rental_id);
+                    table.PrimaryKey("PK_Rental", x => x.RentalId);
                     table.ForeignKey(
-                        name: "FK_Rentals_Cars_Car_id",
-                        column: x => x.Car_id,
-                        principalTable: "Cars",
-                        principalColumn: "Car_id",
+                        name: "FK_Rental_Car_CarId",
+                        column: x => x.CarId,
+                        principalTable: "Car",
+                        principalColumn: "CarId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Rentals_Clients_Client_id",
-                        column: x => x.Client_id,
-                        principalTable: "Clients",
-                        principalColumn: "Client_id",
+                        name: "FK_Rental_Client_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Client",
+                        principalColumn: "ClientId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Rentals_Employees_Employee_id",
-                        column: x => x.Employee_id,
-                        principalTable: "Employees",
-                        principalColumn: "Employee_id",
+                        name: "FK_Rental_Employee_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employee",
+                        principalColumn: "EmployeeId",
                         onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -389,31 +389,31 @@ namespace CarRental_Backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clients_ApplicationUserId",
-                table: "Clients",
+                name: "IX_Client_ApplicationUserId",
+                table: "Client",
                 column: "ApplicationUserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_ApplicationUserId",
-                table: "Employees",
+                name: "IX_Employee_ApplicationUserId",
+                table: "Employee",
                 column: "ApplicationUserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rentals_Car_id",
-                table: "Rentals",
-                column: "Car_id");
+                name: "IX_Rental_CarId",
+                table: "Rental",
+                column: "CarId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rentals_Client_id",
-                table: "Rentals",
-                column: "Client_id");
+                name: "IX_Rental_ClientId",
+                table: "Rental",
+                column: "ClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rentals_Employee_id",
-                table: "Rentals",
-                column: "Employee_id");
+                name: "IX_Rental_EmployeeId",
+                table: "Rental",
+                column: "EmployeeId");
         }
 
         /// <inheritdoc />
@@ -435,19 +435,19 @@ namespace CarRental_Backend.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Rentals");
+                name: "Rental");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Cars");
+                name: "Car");
 
             migrationBuilder.DropTable(
-                name: "Clients");
+                name: "Client");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Employee");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api/axios';
-import { jwtDecode } from 'jwt-decode';
 
 interface Car {
-    car_id: number;
+    carId: number;
     brand: string;
     model: string;
     year: number;
@@ -20,12 +19,12 @@ interface Car {
 const CarDetailsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [car, setCar] = useState<Car | null>(null);
-    const [Rental_date, setRental_date] = useState('');
-    const [Return_date, setReturn_date] = useState('');
+    const [RentalDate, setRental_date] = useState('');
+    const [ReturnDate, setReturn_date] = useState('');
     const [rentalPrice, setRentalPrice] = useState(0);
 
     useEffect(() => {
-        api.get(`/Cars/${id}`)
+        api.get(`/Car/${id}`)
             .then(response => {
                 setCar(response.data as Car);
             })
@@ -35,9 +34,9 @@ const CarDetailsPage: React.FC = () => {
     }, [id]);
 
     useEffect(() => {
-        if (Rental_date && Return_date) {
-            const start = new Date(Rental_date);
-            const end = new Date(Return_date);
+        if (RentalDate && ReturnDate) {
+            const start = new Date(RentalDate);
+            const end = new Date(ReturnDate);
 
             const days = (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
             if (days > 0 && car) {
@@ -46,7 +45,7 @@ const CarDetailsPage: React.FC = () => {
                 setRentalPrice(0);
             }
         }
-    }, [Rental_date, Return_date, car]);
+    }, [RentalDate, ReturnDate, car]);
 
     const handleRent = () => {
         const token = localStorage.getItem('token');
@@ -56,12 +55,12 @@ const CarDetailsPage: React.FC = () => {
         }
 
         const rentalData = {
-            Car_id: car?.car_id,
-            Rental_date: Rental_date,
-            Return_date: Return_date
+            CarId: car?.carId,
+            RentalDate: RentalDate,
+            ReturnDate: ReturnDate
         };
 
-        api.post('/Rentals/RentACar', rentalData)
+        api.post('/Rental/RentACar', rentalData)
             .then(response => {
                 alert('Car rented successfully!');
                 // You can redirect to another page here
@@ -97,11 +96,11 @@ const CarDetailsPage: React.FC = () => {
             }}>
                 <div>
                     <label>Data rozpoczęcia:</label>
-                    <input type="date" value={Rental_date} onChange={e => setRental_date(e.target.value)} min={today} required/>
+                    <input type="date" value={RentalDate} onChange={e => setRental_date(e.target.value)} min={today} required/>
                 </div>
                 <div>
                     <label>Data zakończenia:</label>
-                    <input type="date" value={Return_date} onChange={e => setReturn_date(e.target.value)} min={today} required/>
+                    <input type="date" value={ReturnDate} onChange={e => setReturn_date(e.target.value)} min={today} required/>
                 </div>
                 <p>Cena wynajmu: {rentalPrice} PLN</p>
                 <button type="submit">Wynajmij</button>

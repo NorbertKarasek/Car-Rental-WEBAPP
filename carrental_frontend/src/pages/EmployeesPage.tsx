@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 
 interface Employee {
-    employee_id: string;
+    employeeId: string;
     firstName: string;
     surname: string;
     position: string;
@@ -13,7 +13,7 @@ const EmployeesPage: React.FC = () => {
     const [employees, setEmployees] = useState<Employee[]>([]);
 
     useEffect(() => {
-        api.get('/Employees')
+        api.get('/Employee')
             .then(response => {
                 setEmployees(response.data as Employee[]);
             })
@@ -27,7 +27,7 @@ const EmployeesPage: React.FC = () => {
             <h1>Nasz zespół</h1>
             <ul>
                 {employees.map(emp => (
-                    <li key={emp.employee_id}>
+                    <li key={emp.employeeId}>
                         {emp.firstName} {emp.surname} - {emp.position}
                     </li>
                 ))}

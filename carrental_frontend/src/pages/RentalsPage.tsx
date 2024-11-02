@@ -4,16 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import getUserRole from '../utils/getUserRole';
 
 interface Rental {
-    rental_id: number;
+    rentalId: number;
     car: Car;
     client: Client;
-    rental_date: string;
-    return_date: string;
-    rental_price: number;
+    rentalDate: string;
+    returnDate: string;
+    rentalPrice: number;
     discount: number;
     additionalFees: number;
     isReturned: boolean;
-    return_date_actual?: string;
+    returnDateActual?: string;
 }
 
 interface Car {
@@ -43,7 +43,7 @@ const RentalsPage: React.FC = () => {
             return;
         }
 
-        api.get('/Rentals/AllRentals')
+        api.get('/Rental/AllRental')
             .then(response => {
                 setRentals(response.data as Rental[]);
             })
@@ -54,11 +54,11 @@ const RentalsPage: React.FC = () => {
     }, [navigate]);
 
     const handleConfirmReturn = (rentalId: number) => {
-        api.put(`/Rentals/${rentalId}/ConfirmReturn`)
+        api.put(`/Rental/${rentalId}/ConfirmReturn`)
             .then(() => {
                 alert('Zwrot został zatwierdzony.');
                 setRentals(rentals.map(rental =>
-                    rental.rental_id === rentalId ? { ...rental, isReturned: true, return_date_actual: new Date().toISOString() } : rental
+                    rental.rentalId === rentalId ? { ...rental, isReturned: true, returnDateActual: new Date().toISOString() } : rental
                 ));
             })
             .catch(error => {
@@ -74,11 +74,11 @@ const RentalsPage: React.FC = () => {
             return;
         }
 
-        api.put(`/Rentals/${rentalId}/ApplyDiscount`, { discount })
+        api.put(`/Rental/${rentalId}/ApplyDiscount`, { discount })
             .then(() => {
                 alert('Zniżka została przyznana.');
-                // Odśwież wynajmy
-                api.get('/Rentals/AllRentals')
+                // Refresh rentals
+                api.get('/Rental/AllRental')
                     .then(response => {
                         setRentals(response.data as Rental[]);
                     })
@@ -119,19 +119,19 @@ const RentalsPage: React.FC = () => {
                 </thead>
                 <tbody>
                 {rentals.map(rental => (
-                    <tr key={rental.rental_id}>
-                        <td>{rental.rental_id}</td>
+                    <tr key={rental.rentalId}>
+                        <td>{rental.rentalId}</td>
                         <td>{rental.car.brand} {rental.car.model}</td>
                         <td>{rental.client.firstName} {rental.client.surname}</td>
-                        <td>{new Date(rental.rental_date).toLocaleDateString()}</td>
-                        <td>{new Date(rental.return_date).toLocaleDateString()}</td>
-                        <td>{rental.rental_price} PLN</td>
+                        <td>{new Date(rental.rentalDate).toLocaleDateString()}</td>
+                        <td>{new Date(rental.returnDate).toLocaleDateString()}</td>
+                        <td>{rental.rentalPrice} PLN</td>
                         <td>{(rental.discount * 100).toFixed(0)}%</td>
                         <td>{rental.additionalFees} PLN</td>
                         <td>{rental.isReturned ? 'Tak' : 'Nie'}</td>
                         <td>
                             {!rental.isReturned && (
-                                <button onClick={() => handleConfirmReturn(rental.rental_id)}>Zatwierdź Zwrot</button>
+                                <button onClick={() => handleConfirmReturn(rental.rentalId)}>Zatwierdź Zwrot</button>
                             )}
                             <div>
                                 <input
@@ -140,10 +140,10 @@ const RentalsPage: React.FC = () => {
                                     min="0"
                                     max="0.5"
                                     placeholder="Zniżka (np. 0.1)"
-                                    value={discountValues[rental.rental_id] || ''}
-                                    onChange={e => handleDiscountChange(rental.rental_id, parseFloat(e.target.value))}
+                                    value={discountValues[rental.rentalId] || ''}
+                                    onChange={e => handleDiscountChange(rental.rentalId, parseFloat(e.target.value))}
                                 />
-                                <button onClick={() => handleApplyDiscount(rental.rental_id)}>Przyznaj Zniżkę</button>
+                                <button onClick={() => handleApplyDiscount(rental.rentalId)}>Przyznaj Zniżkę</button>
                             </div>
                         </td>
                     </tr>

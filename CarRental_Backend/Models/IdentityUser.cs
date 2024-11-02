@@ -7,17 +7,9 @@ namespace CarRental_Backend.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string FullName
-        {
-            get
-            {
-                return FirstName + " " + LastName;
-            }
-        }
-        public string PhoneNumber { get; set; }
-        public Clients Client { get; set; } // Navigation property
-        public Employees Employee { get; set; } // Navigation property
-
-        // get more properties if needed
+        public string FullName => $"{FirstName} {LastName}";
+        public Client Client { get; set; } // Navigation property
+        public Employee Employee { get; set; } // Navigation property
     }
+
 }

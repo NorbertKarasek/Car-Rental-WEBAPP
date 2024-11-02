@@ -23,8 +23,8 @@ function App() {
           <Routes>
               {/* Public routes */}
               <Route path="/" element={<HomePage />} />
-              <Route path="/cars" element={<CarsPage />} />
-              <Route path="/cars/:id" element={<CarDetailsPage />} />
+              <Route path="/car" element={<CarsPage />} />
+              <Route path="/car/:id" element={<CarDetailsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
@@ -32,7 +32,7 @@ function App() {
 
               {/* Private routes */}
               <Route
-                  path="/myrentals"
+                  path="/myrental"
                   element={
                       <PrivateRoute>
                           <MyRentalsPage />
@@ -40,7 +40,7 @@ function App() {
                   }
               />
               <Route
-                  path="/employees"
+                  path="/employee"
                   element={
                       <PrivateRoute roles={['Employee', 'Administrator']}>
                           <EmployeesPage />
@@ -48,7 +48,7 @@ function App() {
                   }
               />
               <Route
-                  path="/clients"
+                  path="/client"
                   element={
                       <PrivateRoute roles={['Employee', 'Administrator']}>
                           <ClientsPage />
@@ -64,7 +64,7 @@ function App() {
                   }
               />
               <Route
-                  path="/rentals"
+                  path="/rental"
                   element={
                       <PrivateRoute roles={['Employee', 'Administrator']}>
                           <RentalsPage />

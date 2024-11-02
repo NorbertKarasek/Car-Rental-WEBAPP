@@ -22,7 +22,7 @@ const ClientsPage: React.FC = () => {
     const [clients, setClients] = useState<Client[]>([]);
 
     useEffect(() => {
-        api.get('/Clients')
+        api.get('/Client')
             .then(response => {
                 setClients(response.data as Client[]);
             })

@@ -3,7 +3,7 @@ import api from '../api/axios';
 import { Link } from 'react-router-dom';
 
 interface Car {
-    car_id: number;
+    carId: number;
     brand: string;
     model: string;
     // Add more fields
@@ -13,7 +13,7 @@ const CarsPage: React.FC = () => {
     const [cars, setCars] = useState<Car[]>([]);
 
     useEffect(() => {
-        api.get('/Cars')
+        api.get('/Car')
             .then(response => {
                 setCars(response.data as Car[]);
             })
@@ -27,8 +27,8 @@ const CarsPage: React.FC = () => {
             <h1>Nasze samochody</h1>
             <ul>
                 {cars.map(car => (
-                    <li key={car.car_id}>
-                        <Link to={`/cars/${car.car_id}`}>
+                    <li key={car.carId}>
+                        <Link to={`/Car/${car.carId}`}>
                             {car.brand} {car.model}
                         </Link>
                     </li>

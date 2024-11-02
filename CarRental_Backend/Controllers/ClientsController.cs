@@ -1,4 +1,4 @@
-﻿using CarRental_Backend.Data;
+﻿using CarRental_Backend.Data.Configuration;
 using CarRental_Backend.DTO;
 using CarRental_Backend.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -11,31 +11,31 @@ namespace CarRental_Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClientsController : ControllerBase
+    public class ClientController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<ClientsController> _logger;
+        private readonly ILogger<ClientController> _logger;
 
-        public ClientsController(ApplicationDbContext context, ILogger<ClientsController> logger)
+        public ClientController(ApplicationDbContext context, ILogger<ClientController> logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        // GET: api/Clients
+        // GET: api/Client
         [Authorize(Roles = "Employee,Administrator")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Clients>>> GetClients()
+        public async Task<ActionResult<IEnumerable<Client>>> GetClient()
         {
-            return await _context.Clients.ToListAsync();
+            return await _context.Client.ToListAsync();
         }
 
-        // GET: api/Clients/ById/{id}
+        // GET: api/Client/ById/{id}
         [Authorize(Roles = "Employee,Administrator")]
         [HttpGet("ById/{id}")]
-        public async Task<ActionResult<Clients>> GetClient(string id)
+        public async Task<ActionResult<Client>> GetClient(string id)
         {
-            var client = await _context.Clients.FindAsync(id);
+            var client = await _context.Client.FindAsync(id);
 
             if (client == null)
             {
@@ -45,17 +45,17 @@ namespace CarRental_Backend.Controllers
             return client;
         }
 
-        // GET: api/Clients/MyProfile
+        // GET: api/Client/MyProfile
         [Authorize(Roles = "Client")]
         [HttpGet("MyProfile")]
-        public async Task<ActionResult<Clients>> GetMyProfile()
+        public async Task<ActionResult<Client>> GetMyProfile()
         {
 
             var userId = User.Claims
             .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
             .Select(c => c.Value)
             .FirstOrDefault(value => Guid.TryParse(value, out _));
-            var client = await _context.Clients.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
+            var client = await _context.Client.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
 
             if (client == null)
             {
@@ -65,7 +65,7 @@ namespace CarRental_Backend.Controllers
             return Ok(client);
         }
 
-        // PUT: api/Clients/MyProfile
+        // PUT: api/Client/MyProfile
         [Authorize(Roles = "Client")]
         [HttpPut("MyProfile")]
         public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateClientProfileDto updatedClientDto)
@@ -75,7 +75,7 @@ namespace CarRental_Backend.Controllers
                 .Select(c => c.Value)
                 .FirstOrDefault(value => Guid.TryParse(value, out _));
 
-            var client = await _context.Clients.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
+            var client = await _context.Client.FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
 
             if (client == null)
             {

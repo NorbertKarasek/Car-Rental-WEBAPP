@@ -3,21 +3,21 @@ import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 interface Rental {
-    rental_id: number;
+    rentalId: number;
     car: Car;
-    rental_date: string;
-    return_date: string;
-    rental_price: number;
+    rentalDate: string;
+    returnDate: string;
+    rentalPrice: number;
     discount: number;
     additionalFees: number;
     isReturned: boolean;
-    return_date_actual?: string;
+    returnDateActual?: string;
 }
 
 interface Car {
     brand: string;
     model: string;
-    // ... inne pola
+    // ... other fields
 }
 
 const MyRentalsPage: React.FC = () => {
@@ -32,7 +32,7 @@ const MyRentalsPage: React.FC = () => {
             return;
         }
 
-        api.get('/Rentals/MyRentals')
+        api.get('/Rental/MyRental')
             .then(response => {
                 setRentals(response.data as Rental[]);
             })
@@ -63,12 +63,12 @@ const MyRentalsPage: React.FC = () => {
                     </thead>
                     <tbody>
                     {rentals.map(rental => (
-                        <tr key={rental.rental_id}>
-                            <td>{rental.rental_id}</td>
+                        <tr key={rental.rentalId}>
+                            <td>{rental.rentalId}</td>
                             <td>{rental.car.brand} {rental.car.model}</td>
-                            <td>{new Date(rental.rental_date).toLocaleDateString()}</td>
-                            <td>{new Date(rental.return_date).toLocaleDateString()}</td>
-                            <td>{rental.rental_price} PLN</td>
+                            <td>{new Date(rental.rentalDate).toLocaleDateString()}</td>
+                            <td>{new Date(rental.returnDate).toLocaleDateString()}</td>
+                            <td>{rental.rentalPrice} PLN</td>
                             <td>{(rental.discount * 100).toFixed(0)}%</td>
                             <td>{rental.additionalFees} PLN</td>
                             <td>{rental.isReturned ? 'Tak' : 'Nie'}</td>

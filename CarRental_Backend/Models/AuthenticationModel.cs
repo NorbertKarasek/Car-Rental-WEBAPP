@@ -27,8 +27,8 @@ namespace CarRental_Backend.Models
         public string PhoneNumber { get; set; }
 
         [Required]
-        [RegularExpression("^(Client|Employee)$", ErrorMessage = "Role cloud be only 'Client' or 'Employee'.")]
-        public string Role { get; set; } // "Client" or "Employee"
+        [RegularExpression("^(Client|Employee)$", ErrorMessage = "Role could be only 'Client' or 'Employee'.")]
+        public string Role { get; set; }
     }
 
     public class LoginModel

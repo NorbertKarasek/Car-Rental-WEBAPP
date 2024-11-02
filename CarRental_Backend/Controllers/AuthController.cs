@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using CarRental_Backend.Models;
 using System.Threading.Tasks;
-using CarRental_Backend.Data;
 using CarRental_Backend.Services;
+using CarRental_Backend.Data.Configuration;
 
 namespace CarRental_Backend.Controllers
 {
@@ -63,10 +63,10 @@ namespace CarRental_Backend.Controllers
 
             if (model.Role == "Client")
             {
-                // Create Record in Clients table
-                var client = new Clients
+                // Create Record in Client table
+                var client = new Client
                 {
-                    Client_id = user.Id, // Use UserId as Client_id
+                    ClientId = user.Id, // Use UserId as ClientId
                     Email = model.Email,
                     FirstName = model.FirstName,
                     Surname = model.LastName,
@@ -75,14 +75,14 @@ namespace CarRental_Backend.Controllers
                     // Set other required properties
                 };
 
-                _context.Clients.Add(client);
+                _context.Client.Add(client);
             }
             else if (model.Role == "Employee")
             {
-                // Create record in Employees table
-                var employee = new Employees
+                // Create record in Employee table
+                var employee = new Employee
                 {
-                    Employee_id = user.Id, // Use UserId as Employee_id
+                    EmployeeId = user.Id, // Use UserId as EmployeeId
                     Email = model.Email,
                     FirstName = model.FirstName,
                     Surname = model.LastName,
@@ -91,7 +91,7 @@ namespace CarRental_Backend.Controllers
                     // Set other required properties
                 };
 
-                _context.Employees.Add(employee);
+                _context.Employee.Add(employee);
             }
 
             await _context.SaveChangesAsync();

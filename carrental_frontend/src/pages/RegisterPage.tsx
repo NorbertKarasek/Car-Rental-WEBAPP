@@ -61,13 +61,13 @@ const RegisterPage: React.FC = () => {
                     <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
                 </div>
                 {/* If you want to enable role selection (admins only), you can add a checkbox */}
-                {/* <div>
-          <label>Rola:</label>
-          <select name="role" value={formData.role} onChange={handleChange}>
-            <option value="Client">Klient</option>
-            <option value="Employee">Pracownik</option>
-          </select>
-        </div> */}
+                {<div>
+                    <label>Rola:</label>
+                    <select name="role" value={formData.role} onChange={handleChange}>
+                        <option value="Client">Klient</option>
+                        <option value="Employee">Pracownik</option>
+                    </select>
+                </div>}
                 <button type="submit">Zarejestruj się</button>
             </form>
         </div>

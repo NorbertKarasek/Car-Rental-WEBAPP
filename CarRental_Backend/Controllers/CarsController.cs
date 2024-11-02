@@ -1,4 +1,4 @@
-﻿using CarRental_Backend.Data;
+﻿using CarRental_Backend.Data.Configuration;
 using CarRental_Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,30 +10,30 @@ namespace CarRental_Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CarsController : ControllerBase
+    public class CarController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public CarsController(ApplicationDbContext context)
+        public CarController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Cars
+        // GET: api/Car
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cars>>> GetCars()
+        public async Task<ActionResult<IEnumerable<Car>>> GetCar()
         {
-            return await _context.Cars.ToListAsync();
+            return await _context.Car.ToListAsync();
         }
 
 
-        // GET: api/Cars/index
+        // GET: api/Car/index
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cars>> GetCar(int id)
+        public async Task<ActionResult<Car>> GetCar(int id)
         {
-            var car = await _context.Cars.FindAsync(id);
+            var car = await _context.Car.FindAsync(id);
 
             if (car == null)
             {

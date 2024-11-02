@@ -1,4 +1,4 @@
-﻿using CarRental_Backend.Data;
+﻿using CarRental_Backend.Data.Configuration;
 using CarRental_Backend.DTO;
 using CarRental_Backend.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -12,30 +12,30 @@ namespace CarRental_Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmployeesController : ControllerBase
+    public class EmployeeController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public EmployeesController(ApplicationDbContext context)
+        public EmployeeController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Employees
+        // GET: api/Employee
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employees>>> GetEmployee()
+        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployee()
         {
-            return await _context.Employees.ToListAsync();
+            return await _context.Employee.ToListAsync();
         }
 
 
         // GET: api/Employee/ById/{id}
         [Authorize]
         [HttpGet("ById/{id}")]
-        public async Task<ActionResult<Employees>> GetEmployee(int id)
+        public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.Employee.FindAsync(id);
 
             if (employee == null)
             {
@@ -46,17 +46,17 @@ namespace CarRental_Backend.Controllers
         }
 
 
-        // GET: api/Employees/MyProfile
+        // GET: api/Employee/MyProfile
         [Authorize(Roles = "Employee,Administrator")]
         [HttpGet("MyProfile")]
-        public async Task<ActionResult<Employees>> GetMyProfile()
+        public async Task<ActionResult<Employee>> GetMyProfile()
         {
             var userId = User.Claims
             .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
             .Select(c => c.Value)
             .FirstOrDefault(value => Guid.TryParse(value, out _));
 
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
+            var employee = await _context.Employee.FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
 
             if (employee == null)
             {
@@ -67,7 +67,7 @@ namespace CarRental_Backend.Controllers
         }
 
 
-        // PUT: api/Employees/MyProfile
+        // PUT: api/Employee/MyProfile
         [Authorize(Roles = "Employee,Administrator")]
         [HttpPut("MyProfile")]
         public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateEmployeeProfileDto updatedEmployeeDto)
@@ -76,7 +76,7 @@ namespace CarRental_Backend.Controllers
             .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
             .Select(c => c.Value)
             .FirstOrDefault(value => Guid.TryParse(value, out _));
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
+            var employee = await _context.Employee.FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
 
             if (employee == null)
             {

@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-public class Cars
+public class Car
 {
     [Key]
-    public int Car_id { get; set; }
+    public int CarId { get; set; }
     [Required]
     public string Brand { get; set; }
     [Required]
@@ -11,14 +12,17 @@ public class Cars
     [Required]
     public string Type { get; set; }
     [Required]
+    [Range(1886, int.MaxValue, ErrorMessage = "Year must be valid.")]
     public int Year { get; set; }
     [Required]
+    [Range(0, int.MaxValue, ErrorMessage = "Mileage must be positive.")]
     public int Mileage { get; set; }
     [Required]
     public bool IsAutomatic { get; set; }
     [Required]
     public string Color { get; set; }
     [Required]
+    [Range(0, double.MaxValue, ErrorMessage = "PricePerDay must be positive.")]
     public decimal PricePerDay { get; set; }
     [Required]
     public bool IsFree { get; set; } = true;
@@ -26,6 +30,8 @@ public class Cars
     public string Class { get; set; }
     public string Description { get; set; }
 
-    // Collection of rentals
-    public ICollection<Rentals> Rentals { get; set; } 
+    // Collection of Rental
+    [JsonIgnore]
+    public ICollection<Rental> Rental { get; set; }
 }
+

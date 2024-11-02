@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import getUserRole from '../utils/getUserRole';
 
 interface Client {
-    Client_id: string;
+    ClientId: string;
     firstName: string;
     surname: string;
     email: string;
@@ -19,7 +19,7 @@ interface Client {
 }
 
 interface Employee {
-    Employee_id: string;
+    EmployeeId: string;
     firstName: string;
     surname: string;
     email: string;
@@ -47,7 +47,7 @@ const ProfilePage: React.FC = () => {
         }
         setRole(userRole);
 
-        const endpoint = userRole === 'Client' ? '/Clients/MyProfile' : '/Employees/MyProfile';
+        const endpoint = userRole === 'Client' ? '/Client/MyProfile' : '/Employee/MyProfile';
 
         api.get(endpoint)
             .then(response => {
@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const endpoint = role === 'Client' ? '/Clients/MyProfile' : '/Employees/MyProfile';
+        const endpoint = role === 'Client' ? '/Client/MyProfile' : '/Employee/MyProfile';
         api.put(endpoint, profile)
             .then(() => {
                 alert('Profile was successfully updated!');

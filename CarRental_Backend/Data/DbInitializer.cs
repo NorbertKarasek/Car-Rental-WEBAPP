@@ -26,10 +26,9 @@ namespace CarRental_Backend.Data
                 }
             }
 
-
             // Creating a super user who could maintain the web app
             var adminEmail = "norbert.karasek94@gmail.com";
-            var adminPassword = "Admin123!Admin123$"; // Check if password is strong enough
+            var adminPassword = "Admin123!Admin123$"; // Ensure the password meets the requirements
 
             // Check if the admin user exists
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
@@ -41,7 +40,8 @@ namespace CarRental_Backend.Data
                     UserName = adminEmail,
                     Email = adminEmail,
                     FirstName = "Norbert",
-                    LastName = "Karasek"
+                    LastName = "Karasek",
+                    PhoneNumber = "123456789"
                 };
 
                 var result = await userManager.CreateAsync(newAdminUser, adminPassword);
@@ -53,10 +53,9 @@ namespace CarRental_Backend.Data
                 else
                 {
                     // Error handling
-                    throw new Exception("Nie udało się utworzyć konta administratora: " + string.Join(", ", result.Errors));
+                    throw new Exception("Cloud not create an admin account: " + string.Join(", ", result.Errors));
                 }
             }
         }
     }
-
 }
