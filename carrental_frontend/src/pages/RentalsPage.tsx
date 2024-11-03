@@ -19,7 +19,7 @@ interface Rental {
 interface Car {
     brand: string;
     model: string;
-    // ... inne pola
+    // ... other fields
 }
 
 interface Client {
@@ -27,7 +27,7 @@ interface Client {
     surname: string;
     email: string;
     phoneNumber: string;
-    // ... inne pola
+    // ... other fields
 }
 
 const RentalsPage: React.FC = () => {
@@ -108,6 +108,7 @@ const RentalsPage: React.FC = () => {
                     <th>ID Wynajmu</th>
                     <th>Samochód</th>
                     <th>Klient</th>
+                    <th>Numer Telefonu</th>
                     <th>Data Wynajmu</th>
                     <th>Data Zwrotu</th>
                     <th>Cena</th>
@@ -123,6 +124,7 @@ const RentalsPage: React.FC = () => {
                         <td>{rental.rentalId}</td>
                         <td>{rental.car.brand} {rental.car.model}</td>
                         <td>{rental.client.firstName} {rental.client.surname}</td>
+                        <td>{rental.client.phoneNumber}</td>
                         <td>{new Date(rental.rentalDate).toLocaleDateString()}</td>
                         <td>{new Date(rental.returnDate).toLocaleDateString()}</td>
                         <td>{rental.rentalPrice} PLN</td>

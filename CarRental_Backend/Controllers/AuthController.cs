@@ -4,6 +4,7 @@ using CarRental_Backend.Models;
 using System.Threading.Tasks;
 using CarRental_Backend.Services;
 using CarRental_Backend.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarRental_Backend.Controllers
 {
@@ -24,17 +25,35 @@ namespace CarRental_Backend.Controllers
 
         // POST: api/Auth/Register
         [HttpPost("Register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                // User is logged in
+                if (User.IsInRole("Client"))
+                {
+                    // Logged in customer cannot register new accounts
+                    return Forbid("Logged in customers do not have access to registration.");
+                }
+                // Employees and administrators can create accounts
+            }
+            else
+            {
+                // The user is not logged in
+                // Set the role to "Client" regardless of what is in the model
+                model.Role = "Client";
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            // Check if role is valid
+            // Check if the role is correct
             if (model.Role != "Client" && model.Role != "Employee")
             {
-                return BadRequest("Invalid role. Role must be 'Client' or 'Employee'.");
+                return BadRequest("Nieprawidłowa rola. Rola musi być 'Client' lub 'Employee'.");
             }
 
             var user = new ApplicationUser
@@ -44,7 +63,7 @@ namespace CarRental_Backend.Controllers
                 PhoneNumber = model.PhoneNumber,
                 FirstName = model.FirstName,
                 LastName = model.LastName
-                // Different properties
+                // other properties
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -63,32 +82,32 @@ namespace CarRental_Backend.Controllers
 
             if (model.Role == "Client")
             {
-                // Create Record in Client table
+                // Create a record in the Client table
                 var client = new Client
                 {
-                    ClientId = user.Id, // Use UserId as ClientId
+                    ClientId = user.Id,
                     Email = model.Email,
                     FirstName = model.FirstName,
                     Surname = model.LastName,
                     PhoneNumber = model.PhoneNumber,
                     ApplicationUserId = user.Id
-                    // Set other required properties
+                    // other properties
                 };
 
                 _context.Client.Add(client);
             }
             else if (model.Role == "Employee")
             {
-                // Create record in Employee table
+                // Create a record in the Employee table
                 var employee = new Employee
                 {
-                    EmployeeId = user.Id, // Use UserId as EmployeeId
+                    EmployeeId = user.Id,
                     Email = model.Email,
                     FirstName = model.FirstName,
                     Surname = model.LastName,
                     PhoneNumber = model.PhoneNumber,
                     ApplicationUserId = user.Id
-                    // Set other required properties
+                    // other properties
                 };
 
                 _context.Employee.Add(employee);
@@ -96,12 +115,12 @@ namespace CarRental_Backend.Controllers
 
             await _context.SaveChangesAsync();
 
-            return StatusCode(StatusCodes.Status201Created, "User created successfully!");
-
+            return StatusCode(StatusCodes.Status201Created, "User created succesfully");
         }
 
         // POST: api/Auth/Login
         [HttpPost("Login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid)

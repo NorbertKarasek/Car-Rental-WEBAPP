@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 interface Rental {
     rentalId: number;
     car: Car;
+    client: Client;
     rentalDate: string;
     returnDate: string;
     rentalPrice: number;
@@ -17,6 +18,14 @@ interface Rental {
 interface Car {
     brand: string;
     model: string;
+    // ... other fields
+}
+
+interface Client {
+    firstName: string;
+    surname: string;
+    email: string;
+    phoneNumber: string;
     // ... other fields
 }
 
@@ -52,6 +61,8 @@ const MyRentalsPage: React.FC = () => {
                     <thead>
                     <tr>
                         <th>ID Wynajmu</th>
+                        <th>Wynajmujący</th>
+                        <th>Numer Telefonu</th>
                         <th>Samochód</th>
                         <th>Data Wynajmu</th>
                         <th>Data Zwrotu</th>
@@ -65,6 +76,8 @@ const MyRentalsPage: React.FC = () => {
                     {rentals.map(rental => (
                         <tr key={rental.rentalId}>
                             <td>{rental.rentalId}</td>
+                            <td>{rental.client.firstName} {rental.client.surname}</td>
+                            <td>{rental.client.phoneNumber}</td>
                             <td>{rental.car.brand} {rental.car.model}</td>
                             <td>{new Date(rental.rentalDate).toLocaleDateString()}</td>
                             <td>{new Date(rental.returnDate).toLocaleDateString()}</td>

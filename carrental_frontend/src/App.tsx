@@ -27,34 +27,55 @@ function App() {
               <Route path="/car/:id" element={<CarDetailsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
               {/* Private routes */}
+              {/* Register */}
               <Route
-                  path="/myrental"
+                  path="/register"
                   element={
-                      <PrivateRoute>
-                          <MyRentalsPage />
+                      <PrivateRoute
+                          allowFor={['Anonymous', 'Employee', 'Administrator']}
+                          redirectTo="/unauthorized"
+                      >
+                          <RegisterPage />
                       </PrivateRoute>
                   }
               />
+              {/* List of employees */}
               <Route
                   path="/employee"
                   element={
-                      <PrivateRoute roles={['Employee', 'Administrator']}>
+                      <PrivateRoute allowFor={['Employee', 'Administrator']}
+                                    redirectTo="/unauthorized"
+                      >
                           <EmployeesPage />
                       </PrivateRoute>
                   }
               />
+              {/* List of clients */}
               <Route
                   path="/client"
                   element={
-                      <PrivateRoute roles={['Employee', 'Administrator']}>
+                      <PrivateRoute allowFor={['Employee', 'Administrator']}
+                                    redirectTo="/unauthorized"
+                      >
                           <ClientsPage />
                       </PrivateRoute>
                   }
               />
+              {/* All Rentals */}
+              <Route
+                  path="/rental"
+                  element={
+                      <PrivateRoute allowFor={['Employee', 'Administrator']}
+                                    redirectTo="/unauthorized"
+                      >
+                          <RentalsPage />
+                      </PrivateRoute>
+                  }
+                />
+              {/* My Profile */}
               <Route
                   path="/profile"
                   element={
@@ -63,14 +84,15 @@ function App() {
                       </PrivateRoute>
                   }
               />
+              {/* My rentals */}
               <Route
-                  path="/rental"
+                  path="/myrental"
                   element={
-                      <PrivateRoute roles={['Employee', 'Administrator']}>
-                          <RentalsPage />
+                      <PrivateRoute>
+                          <MyRentalsPage />
                       </PrivateRoute>
                   }
-                />
+              />
               {/* Add more private routes */}
           </Routes>
         {/* You can add components here, ex. Footer */}

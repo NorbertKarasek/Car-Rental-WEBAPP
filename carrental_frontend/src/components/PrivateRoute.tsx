@@ -3,51 +3,35 @@ import { Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
 interface PrivateRouteProps {
-    children: JSX.Element;
-    roles?: string[]; // Acceptable roles
+    children: React.ReactNode;
+    allowFor?: string[]; // Table of roles allowed to access the route
+    redirectTo?: string; // Route to redirect to if user is not logged in or doesn't have required role
 }
 
-interface DecodedToken {
-    exp: number;
-    [key: string]: any;
-}
-
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, roles }) => {
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, allowFor, redirectTo = '/login' }) => {
     const token = localStorage.getItem('token');
 
     if (!token) {
-        return <Navigate to="/login" />;
+        // User is not logged in
+        if (allowFor && allowFor.includes('Anonymous')) {
+            return <>{children}</>;
+        } else {
+            return <Navigate to={redirectTo} replace />;
+        }
     }
 
-    try {
-        const decoded: DecodedToken = jwtDecode(token);
+    // Decode the token to get user roles
+    const decoded: any = jwtDecode(token);
+    const userRoles = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+    const userRolesArray = Array.isArray(userRoles) ? userRoles : [userRoles];
 
-        // Check if the token has not expired
-        if (decoded.exp * 1000 < Date.now()) {
-            localStorage.removeItem('token');
-            return <Navigate to="/login" />;
-        }
-
-        // Check user roles
-        if (roles) {
-            const userRoles = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-            if (Array.isArray(userRoles)) {
-                const hasRole = roles.some(role => userRoles.includes(role));
-                if (!hasRole) {
-                    return <Navigate to="/unauthorized" />;
-                }
-            } else {
-                if (!roles.includes(userRoles)) {
-                    return <Navigate to="/unauthorized" />;
-                }
-            }
-        }
-
-        return children;
-    } catch (error) {
-        localStorage.removeItem('token');
-        return <Navigate to="/login" />;
+    if (allowFor && !userRolesArray.some(role => allowFor.includes(role))) {
+        // User is logged in, but doesn't have required role
+        return <Navigate to="/unauthorized" replace />;
     }
+
+    // User is logged in and has required role
+    return <>{children}</>;
 };
 
 export default PrivateRoute;

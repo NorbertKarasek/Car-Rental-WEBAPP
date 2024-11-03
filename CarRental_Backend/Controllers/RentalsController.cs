@@ -208,6 +208,7 @@ namespace CarRental_Backend.Controllers
             {
                 var Rental = await _context.Rental
                     .Include(r => r.Car)
+                    .Include(r => r.Client)
                     .Where(r => r.ClientId == client.ClientId)
                     .Select(r => new RentalDTO
                     {
@@ -225,8 +226,16 @@ namespace CarRental_Backend.Controllers
                             Brand = r.Car.Brand,
                             Model = r.Car.Model,
                             // add other needed fields
+                        },
+                        Client = new ClientDTO
+                        {
+                            ClientId = r.Client.ClientId,
+                            FirstName = r.Client.FirstName,
+                            Surname = r.Client.Surname,
+                            Email = r.Client.Email,
+                            PhoneNumber = r.Client.PhoneNumber,
+                            // Add other needed fields
                         }
-                        // You can provide ClientDTO if it is not needed
                     })
                     .ToListAsync();
 
@@ -239,6 +248,7 @@ namespace CarRental_Backend.Controllers
             {
                 var Rental = await _context.Rental
                     .Include(r => r.Car)
+                    .Include(r => r.Client)
                     .Where(r => r.EmployeeId == employee.EmployeeId)
                     .Select(r => new RentalDTO
                     {
@@ -256,8 +266,16 @@ namespace CarRental_Backend.Controllers
                             Brand = r.Car.Brand,
                             Model = r.Car.Model,
                             // add other needed fields
+                        },
+                        Client = new ClientDTO
+                        {
+                            ClientId = r.Client.ClientId,
+                            FirstName = r.Client.FirstName,
+                            Surname = r.Client.Surname,
+                            Email = r.Client.Email,
+                            PhoneNumber = r.Client.PhoneNumber,
+                            // Add other needed fields
                         }
-                        // You can provide ClientDTO if it is not needed
                     })
                     .ToListAsync();
 

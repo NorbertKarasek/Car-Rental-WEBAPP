@@ -1,4 +1,3 @@
-// Navbar.tsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -21,42 +20,42 @@ const Navbar: React.FC = () => {
         userRoles = Array.isArray(roles) ? roles : [roles];
     }
 
-    const isEmployee = userRoles.includes('Employee') || userRoles.includes('Administrator');
+    const isEmployeeOrAdmin = userRoles.includes('Employee') || userRoles.includes('Administrator');
+    const isClient = userRoles.includes('Client');
 
     return (
         <nav>
             <ul>
-                {/* Links visible depending on logon state */}
                 {token ? (
                     <>
                         Witaj, {userName}!
                         <li><Link to="/profile">Mój Profil</Link></li>
                         <li><Link to="/myrental">Moje Wynajmy</Link></li>
+                        {/* Show register link for logged in admins and employees */}
+                        {isEmployeeOrAdmin && <li><Link to="/register">Rejestracja</Link></li>}
                         <li>
                             <button onClick={handleLogout}>Wyloguj się</button>
                         </li>
                     </>
                 ) : (
                     <>
-                    <li><Link to="/login">Logowanie</Link></li>
+                        <li><Link to="/login">Logowanie</Link></li>
+                        {/* Show register link to everyone */}
                         <li><Link to="/register">Rejestracja</Link></li>
                     </>
                 )}
-                {/* links visible for all */}
+                {/* Links visible for all */}
                 <li><Link to="/">Strona główna</Link></li>
                 <li><Link to="/car">Samochody</Link></li>
                 <li><Link to="/contact">Kontakt</Link></li>
-                {/* Links visible only for employees */}
-                {isEmployee && (
-                    <li><Link to="/client">Klienci</Link></li>
+                {/* Links visible only for employees or admins */}
+                {isEmployeeOrAdmin && (
+                    <>
+                        <li><Link to="/client">Klienci</Link></li>
+                        <li><Link to="/employee">Pracownicy</Link></li>
+                        <li><Link to="/rental">Wynajmy</Link></li>
+                    </>
                 )}
-                {isEmployee && (
-                    <li><Link to="/employee">Pracownicy</Link></li>
-                )}
-                {isEmployee && (
-                    <li><Link to="/rental">Wynajmy</Link></li>
-                )}
-
             </ul>
         </nav>
     );
