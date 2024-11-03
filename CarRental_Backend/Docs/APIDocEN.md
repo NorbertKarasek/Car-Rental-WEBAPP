@@ -1,4 +1,4 @@
-﻿# CarRental_Backend API Documentation
+﻿# CarRental_Backend API Documentation ![EN](https://img.shields.io/badge/-EN-blue)
 
 ## Table of Contents
 
