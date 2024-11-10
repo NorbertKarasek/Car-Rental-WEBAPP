@@ -26,9 +26,6 @@ const RegisterPage: React.FC = () => {
         role: 'Client' // Default role for new users
     });
 
-    // State to store error messages
-    const [error, setError] = useState<string | null>(null);
-
     const handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -36,11 +33,10 @@ const RegisterPage: React.FC = () => {
             .then(response => {
                 alert('Registration successful. You can now log in.');
                 navigate('/login');
-                setError(null); // Clear any previous errors
             })
             .catch(error => {
                 console.error('Error occurred during registration.', error);
-                setError('Error occurred during registration. Please try again.');
+                alert('Error occurred during registration. Please try again.');
             });
     };
 
@@ -91,8 +87,6 @@ const RegisterPage: React.FC = () => {
                 )}
                 <button type="submit">Zarejestruj się</button>
             </form>
-            {/* Show error message if there is an error */}
-            {error && <div style={{ color: 'red' }}>{error}</div>}
         </div>
     );
 };

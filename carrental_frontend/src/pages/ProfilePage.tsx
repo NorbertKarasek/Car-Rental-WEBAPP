@@ -37,8 +37,6 @@ const ProfilePage: React.FC = () => {
     const [role, setRole] = useState<string | null>(null);
     const [profile, setProfile] = useState<Client | Employee | null>(null);
     const [editMode, setEditMode] = useState(false);
-    // State to store error messages
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const userRole = getUserRole();
@@ -54,11 +52,9 @@ const ProfilePage: React.FC = () => {
         api.get(endpoint)
             .then(response => {
                 setProfile(response.data as Client | Employee);
-                setError(null); // Clear any previous errors
             })
             .catch(error => {
                 console.error('Error occurred during downloading a profile:', error);
-                setError('Failed to load profile. Please try again later.');
             });
     }, [navigate]);
 
@@ -78,21 +74,15 @@ const ProfilePage: React.FC = () => {
             .then(() => {
                 alert('Profile was successfully updated!');
                 setEditMode(false);
-                setError(null); // Clear any previous errors
             })
             .catch(error => {
                 console.error('Error occurred during updating profile', error);
-                setError('Failed to update profile. Please try again later.');
+                alert('Error occurred during updating profile');
             });
     };
 
     if (!profile) {
         return <div>Ładowanie...</div>;
-    }
-
-    // Show error message if there is an error
-    if (error) {
-        return <div style={{ color: 'red' }}>{error}</div>;
     }
 
     return (
