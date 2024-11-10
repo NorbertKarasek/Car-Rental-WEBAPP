@@ -10,17 +10,29 @@ interface Employee {
 }
 
 const EmployeesPage: React.FC = () => {
+    // State to store the list of employees
     const [employees, setEmployees] = useState<Employee[]>([]);
+    // State to store error messages
+    const [error, setError] = useState<string | null>(null);
 
+    // Fetch the list of employees when the component mounts
     useEffect(() => {
         api.get('/Employee')
             .then(response => {
+                // Set the list of employees in state
                 setEmployees(response.data as Employee[]);
+                setError(null); // Clear any previous errors
             })
             .catch(error => {
-                console.error('Error occured during downloading employees list', error);
+                console.error('Error occurred during downloading employees list', error);
+                setError('Failed to load employees list. Please try again later.');
             });
     }, []);
+
+    // Show error message if there is an error
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div>

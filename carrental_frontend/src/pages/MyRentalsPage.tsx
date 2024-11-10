@@ -31,8 +31,12 @@ interface Client {
 
 const MyRentalsPage: React.FC = () => {
     const navigate = useNavigate();
+    // State to store the list of rentals
     const [rentals, setRentals] = useState<Rental[]>([]);
+    // State to store error messages
+    const [error, setError] = useState<string | null>(null);
 
+    // Fetch the list of rentals when the component mounts
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -43,13 +47,20 @@ const MyRentalsPage: React.FC = () => {
 
         api.get('/Rental/MyRental')
             .then(response => {
+                // Set the list of rentals in state
                 setRentals(response.data as Rental[]);
+                setError(null); // Clear any previous errors
             })
             .catch(error => {
                 console.error('Error occurred during downloading your rentals', error);
-                alert('Error occurred during downloading your rentals');
+                setError('Failed to load your rentals. Please try again later.');
             });
     }, [navigate]);
+
+    // Show error message if there is an error
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div>
