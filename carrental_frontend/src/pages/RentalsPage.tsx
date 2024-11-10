@@ -38,7 +38,7 @@ const RentalsPage: React.FC = () => {
     useEffect(() => {
         const role = getUserRole();
         if (role !== 'Employee' && role !== 'Administrator') {
-            alert('Nie masz dostępu do tej strony.');
+            alert('You have no access to this site.');
             navigate('/login');
             return;
         }
@@ -48,47 +48,46 @@ const RentalsPage: React.FC = () => {
                 setRentals(response.data as Rental[]);
             })
             .catch(error => {
-                console.error('Błąd podczas pobierania wynajmów:', error);
-                alert('Błąd podczas pobierania wynajmów.');
+                console.error('Error occurred during downloading rentals:', error);
+                alert('Error occurred during downloading rentals:');
             });
     }, [navigate]);
 
     const handleConfirmReturn = (rentalId: number) => {
         api.put(`/Rental/${rentalId}/ConfirmReturn`)
             .then(() => {
-                alert('Zwrot został zatwierdzony.');
+                alert('Return accepted.');
                 setRentals(rentals.map(rental =>
                     rental.rentalId === rentalId ? { ...rental, isReturned: true, returnDateActual: new Date().toISOString() } : rental
                 ));
             })
             .catch(error => {
-                console.error('Błąd podczas zatwierdzania zwrotu:', error);
-                alert('Błąd podczas zatwierdzania zwrotu.');
+                console.error('Error occurred during returning a car', error);
+                alert('Error occurred during returning a car');
             });
     };
 
     const handleApplyDiscount = (rentalId: number) => {
         const discount = discountValues[rentalId];
         if (discount < 0 || discount > 0.5) {
-            alert('Zniżka musi być w zakresie od 0% do 50%.');
+            alert('The discount must be between 0% and 50%.');
             return;
         }
 
         api.put(`/Rental/${rentalId}/ApplyDiscount`, { discount })
             .then(() => {
-                alert('Zniżka została przyznana.');
+                alert('The discount has been granted.');
                 // Refresh rentals
                 api.get('/Rental/AllRental')
                     .then(response => {
                         setRentals(response.data as Rental[]);
                     })
                     .catch(error => {
-                        console.error('Błąd podczas odświeżania wynajmów:', error);
+                        console.error('Error refreshing rentals:', error);
                     });
             })
             .catch(error => {
-                console.error('Błąd podczas przyznawania zniżki:', error);
-                alert('Błąd podczas przyznawania zniżki.');
+                console.error('Error while granting discount:', error);
             });
     };
 
@@ -128,7 +127,7 @@ const RentalsPage: React.FC = () => {
                         <td>{new Date(rental.rentalDate).toLocaleDateString()}</td>
                         <td>{new Date(rental.returnDate).toLocaleDateString()}</td>
                         <td>{rental.rentalPrice} PLN</td>
-                        <td>{(rental.discount * 100).toFixed(0)}%</td>
+                        <td>{(Math.min(rental.discount, 0.5) * 100).toFixed(0)}%</td>
                         <td>{rental.additionalFees} PLN</td>
                         <td>{rental.isReturned ? 'Tak' : 'Nie'}</td>
                         <td>

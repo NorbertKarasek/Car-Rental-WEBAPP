@@ -161,7 +161,7 @@ const ProfilePage: React.FC = () => {
                     {role === 'Employee' && (
                         <>
                             <p>Stanowisko: {(profile as Employee).position}</p>
-                            {/* Wyświetl inne pola specyficzne dla pracowników */}
+                            {/* Add more specific fields for employees */}
                         </>
                     )}
                     <button onClick={() => setEditMode(true)}>Edytuj Profil</button>
