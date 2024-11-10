@@ -19,17 +19,29 @@ interface Client {
 }
 
 const ClientsPage: React.FC = () => {
+    // State to store the list of clients
     const [clients, setClients] = useState<Client[]>([]);
+    // State to store error messages
+    const [error, setError] = useState<string | null>(null);
 
+    // Fetch the list of clients when the component mounts
     useEffect(() => {
         api.get('/Client')
             .then(response => {
+                // Set the list of clients in state
                 setClients(response.data as Client[]);
+                setError(null); // Clear any previous errors
             })
             .catch(error => {
-                console.error('Błąd podczas pobierania listy klientów:', error);
+                console.error('Error occurred during downloading clients list:', error);
+                setError('Failed to load clients list. Please try again later.');
             });
     }, []);
+
+    // Show error message if there is an error
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div>

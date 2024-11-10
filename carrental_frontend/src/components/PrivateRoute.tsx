@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 
 interface PrivateRouteProps {
     children: React.ReactNode;
-    allowFor?: string[]; // Table of roles allowed to access the route
+    allowFor?: string[]; // Array of roles allowed to access the route
     redirectTo?: string; // Route to redirect to if user is not logged in or doesn't have required role
 }
 
@@ -14,8 +14,10 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, allowFor, redirec
     if (!token) {
         // User is not logged in
         if (allowFor && allowFor.includes('Anonymous')) {
+            // Allow access for anonymous users if specified
             return <>{children}</>;
         } else {
+            // Redirect to login page if user is not logged in
             return <Navigate to={redirectTo} replace />;
         }
     }

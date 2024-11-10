@@ -32,9 +32,14 @@ interface Client {
 
 const RentalsPage: React.FC = () => {
     const navigate = useNavigate();
+    // State to store the list of rentals
     const [rentals, setRentals] = useState<Rental[]>([]);
+    // State to store discount values for each rental
     const [discountValues, setDiscountValues] = useState<{ [key: number]: number }>({});
+    // State to store error messages
+    const [error, setError] = useState<string | null>(null);
 
+    // Fetch the list of rentals when the component mounts
     useEffect(() => {
         const role = getUserRole();
         if (role !== 'Employee' && role !== 'Administrator') {
@@ -45,28 +50,34 @@ const RentalsPage: React.FC = () => {
 
         api.get('/Rental/AllRental')
             .then(response => {
+                // Set the list of rentals in state
                 setRentals(response.data as Rental[]);
+                setError(null); // Clear any previous errors
             })
             .catch(error => {
                 console.error('Error occurred during downloading rentals:', error);
-                alert('Error occurred during downloading rentals:');
+                setError('Failed to load rentals. Please try again later.');
             });
     }, [navigate]);
 
+    // Handle confirming the return of a rental
     const handleConfirmReturn = (rentalId: number) => {
         api.put(`/Rental/${rentalId}/ConfirmReturn`)
             .then(() => {
                 alert('Return accepted.');
+                // Update the rental state to mark it as returned
                 setRentals(rentals.map(rental =>
                     rental.rentalId === rentalId ? { ...rental, isReturned: true, returnDateActual: new Date().toISOString() } : rental
                 ));
+                setError(null); // Clear any previous errors
             })
             .catch(error => {
                 console.error('Error occurred during returning a car', error);
-                alert('Error occurred during returning a car');
+                setError('Failed to confirm return. Please try again later.');
             });
     };
 
+    // Handle applying a discount to a rental
     const handleApplyDiscount = (rentalId: number) => {
         const discount = discountValues[rentalId];
         if (discount < 0 || discount > 0.5) {
@@ -81,22 +92,31 @@ const RentalsPage: React.FC = () => {
                 api.get('/Rental/AllRental')
                     .then(response => {
                         setRentals(response.data as Rental[]);
+                        setError(null); // Clear any previous errors
                     })
                     .catch(error => {
                         console.error('Error refreshing rentals:', error);
+                        setError('Failed to refresh rentals. Please try again later.');
                     });
             })
             .catch(error => {
                 console.error('Error while granting discount:', error);
+                setError('Failed to apply discount. Please try again later.');
             });
     };
 
+    // Handle discount value change
     const handleDiscountChange = (rentalId: number, value: number) => {
         setDiscountValues(prev => ({
             ...prev,
             [rentalId]: value,
         }));
     };
+
+    // Show error message if there is an error
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div>
