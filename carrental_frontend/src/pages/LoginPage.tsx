@@ -10,8 +10,6 @@ const LoginPage: React.FC = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    // State to store error messages
-    const [error, setError] = useState<string | null>(null);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,11 +22,10 @@ const LoginPage: React.FC = () => {
                 localStorage.setItem('token', token);
                 // Redirect the user to the home page or another page
                 navigate('/');
-                setError(null); // Clear any previous errors
             })
             .catch(error => {
                 console.error('Error during logon:', error);
-                setError('Incorrect login or password.');
+                alert('Incorrect login or password.');
             });
     };
 
@@ -46,8 +43,6 @@ const LoginPage: React.FC = () => {
                 </div>
                 <button type="submit">Zaloguj się</button>
             </form>
-            {/* Show error message if there is an error */}
-            {error && <div style={{ color: 'red' }}>{error}</div>}
         </div>
     );
 };

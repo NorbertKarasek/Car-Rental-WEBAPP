@@ -10,29 +10,17 @@ interface Car {
 }
 
 const CarsPage: React.FC = () => {
-    // State to store the list of cars
     const [cars, setCars] = useState<Car[]>([]);
-    // State to store error messages
-    const [error, setError] = useState<string | null>(null);
 
-    // Fetch the list of cars when the component mounts
     useEffect(() => {
         api.get('/Car')
             .then(response => {
-                // Set the list of cars in state
                 setCars(response.data as Car[]);
-                setError(null); // Clear any previous errors
             })
             .catch(error => {
-                console.error('Error occurred during downloading cars list', error);
-                setError('Failed to load cars list. Please try again later.');
+                console.error('Error occured during downloading cars list', error);
             });
     }, []);
-
-    // Show error message if there is an error
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
 
     return (
         <div>
@@ -40,7 +28,6 @@ const CarsPage: React.FC = () => {
             <ul>
                 {cars.map(car => (
                     <li key={car.carId}>
-                        {/* Link to the car details page */}
                         <Link to={`/Car/${car.carId}`}>
                             {car.brand} {car.model}
                         </Link>
