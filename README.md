@@ -45,8 +45,8 @@ Szczegółowa dokumentacja znajduje się w folderach `docs` wewnątrz każdego z
 
 Zapraszamy do zapoznania się z dokumentacją, aby uzyskać szczegółowe informacje o konfiguracji, strukturze i używanych technologiach.
 
+--- 
+
 Autorzy:
 Norbert Karasek
 
-
---- 
