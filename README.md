@@ -49,4 +49,5 @@ Zapraszamy do zapoznania się z dokumentacją, aby uzyskać szczegółowe inform
 
 Autorzy:
 Norbert Karasek
+Jakub Kiełbasiński, 119250
 
