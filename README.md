@@ -48,6 +48,6 @@ Zapraszamy do zapoznania się z dokumentacją, aby uzyskać szczegółowe inform
 --- 
 
 Autorzy:
-Norbert Karasek,
-Jakub Kiełbasiński 119250
-Krystiana Kawecka 119243
+- **119190** | Norbert Karasek
+- **119250** | Jakub Kiełbasiński 
+- **119243** | Krystiana Kawecka 
