@@ -50,4 +50,5 @@ Zapraszamy do zapoznania się z dokumentacją, aby uzyskać szczegółowe inform
 Autorzy:
 - **119190** | Norbert Karasek
 - **119250** | Jakub Kiełbasiński 
-- **119243** | Krystiana Kawecka 
+- **119243** | Krystiana Kawecka
+- **122448** | Bartosz Komisarczyk
