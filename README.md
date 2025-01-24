@@ -53,3 +53,4 @@ Autorzy:
 - **119243** | Krystiana Kawecka
 - **122448** | Bartosz Komisarczyk
 - **119204** | Karol Jagodziński
+- **113848** | Jakub Kolanowski
