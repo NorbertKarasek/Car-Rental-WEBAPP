@@ -45,12 +45,4 @@ Szczegółowa dokumentacja znajduje się w folderach `docs` wewnątrz każdego z
 
 Zapraszamy do zapoznania się z dokumentacją, aby uzyskać szczegółowe informacje o konfiguracji, strukturze i używanych technologiach.
 
---- 
-
-Autorzy:
-- **119190** | Norbert Karasek
-- **119250** | Jakub Kiełbasiński 
-- **119243** | Krystiana Kawecka
-- **122448** | Bartosz Komisarczyk
-- **119204** | Karol Jagodziński
-- **113848** | Jakub Kolanowski
+---
